@@ -57,7 +57,8 @@ function App() {
     }).catch((err: Error) => {
       setError(new Error(err.message));
     });
-  });
+    // eslint-disable-next-line
+  }, []); // This needs to be left empty to ensure the effect is run once
 
   /**
    * STEP 3 - FHIR API data fetching
