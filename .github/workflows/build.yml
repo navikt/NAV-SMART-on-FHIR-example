@@ -6,8 +6,6 @@ on:
       - '**.md'
       - '.gitignore'
       - '.dockerignore'
-    branches:
-      - *
 
 jobs:
   build:
