@@ -59,7 +59,7 @@ jobs:
       TIMEOUT: 10m
       RESOURCE: .nais/app.yaml
       CLUSTER: dev-gcp
-      VARS: nais/dev-gcp.json
+      VARS: .nais/dev-gcp.json
       IMAGE: ${{ needs.docker-build.outputs.image }}
     steps:
       - name: Sjekk ut kode
