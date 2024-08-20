@@ -57,7 +57,7 @@ function App() {
     }).catch((err: Error) => {
       setError(new Error(err.message));
     });
-  }, []);
+  });
 
   /**
    * STEP 3 - FHIR API data fetching
