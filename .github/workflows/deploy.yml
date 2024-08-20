@@ -2,12 +2,12 @@ name: Deploy
 on:
   workflow_dispatch:
   push:
+    branches:
+      - main
     paths-ignore:
       - '**.md'
       - '.gitignore'
       - '.dockerignore'
-    branches:
-      - main
 
 env:
   IMAGE: europe-north1-docker.pkg.dev/${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}/helseopplysninger/${{ github.event.repository.name }}
