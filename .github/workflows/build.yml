@@ -1,12 +1,21 @@
-name: Lint
-
+name: Build
 on:
-  - push
-  - pull_request
+  workflow_dispatch:
+  push:
+    paths-ignore:
+      - '**.md'
+      - '.gitignore'
+      - '.dockerignore'
+    branches:
+      - *
 
 jobs:
-  lint:
+  build:
     runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+      id-token: write
     steps:
       - name: Sjekk ut kode
         uses: actions/checkout@v4
@@ -26,5 +35,5 @@ jobs:
       - name: Installer avhengigheter
         run: pnpm install
 
-      - name: Kjør lint
-        run: pnpm run lint
+      - name: Bygg koden
+        run: pnpm run build
