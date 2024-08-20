@@ -11,9 +11,6 @@ importers:
       fhirclient:
         specifier: ^2.5.3
         version: 2.5.3(@types/hapi@18.0.14)(@types/node@20.14.9)(expo@51.0.18(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7)))(react-native@0.74.3(@babel/core@7.24.7)(@babel/preset-env@7.24.7(@babel/core@7.24.7))(@types/react@18.3.3)(react@18.3.1))
-      hl7.fhir.no.basis:
-        specifier: 2.2.0
-        version: 2.2.0
       react:
         specifier: ^18.3.1
         version: 18.3.1
@@ -2767,12 +2764,6 @@ packages:
   hermes-profile-transformer@0.0.6:
     resolution: {integrity: sha512-cnN7bQUm65UWOy6cbGcCcZ3rpwW8Q/j4OP5aWRhEry4Z2t2aR1cjrbp0BS+KiBN0smvP1caBgAuxutvyvJILzQ==}
     engines: {node: '>=8'}
-
-  hl7.fhir.no.basis@2.2.0:
-    resolution: {integrity: sha1-UH3VubbNj8RD/ePFN43UZuzFTM4=, tarball: https://packages.simplifier.net/hl7.fhir.no.basis/2.2.0}
-
-  hl7.fhir.r4.core@4.0.1:
-    resolution: {integrity: sha1-DkuNmfeRhYdVdoLItH32BUJFR6U=, tarball: https://packages.simplifier.net/hl7.fhir.r4.core/4.0.1}
 
   hosted-git-info@3.0.8:
     resolution: {integrity: sha512-aXpmwoOhRBrw6X3j0h5RloK4x1OzsxMPyxqIHyNfSe2pypkVTZFpEiRoSipPEPlMrh0HW/XsjkJ5WgnCirpNUw==}
@@ -8838,12 +8829,6 @@ snapshots:
     dependencies:
       source-map: 0.7.4
     optional: true
-
-  hl7.fhir.no.basis@2.2.0:
-    dependencies:
-      hl7.fhir.r4.core: 4.0.1
-
-  hl7.fhir.r4.core@4.0.1: {}
 
   hosted-git-info@3.0.8:
     dependencies:
