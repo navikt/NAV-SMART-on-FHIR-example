@@ -1,8 +1,12 @@
 name: Lint
 
 on:
-  - push
-  - pull_request
+  workflow_call:
+    secrets:
+      READER_TOKEN:
+        required: true
+  push:
+  pull_request:
 
 jobs:
   lint:

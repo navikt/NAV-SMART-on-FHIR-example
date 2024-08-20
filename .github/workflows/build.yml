@@ -1,6 +1,11 @@
 name: Build
 on:
   workflow_dispatch:
+  workflow_call:
+    secrets:
+      READER_TOKEN:
+        required: true
+  pull_request:
   push:
     paths-ignore:
       - '**.md'

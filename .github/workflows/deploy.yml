@@ -15,9 +15,13 @@ env:
 jobs:
   lint:
     uses: ./.github/workflows/lint.yml
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
   build:
     uses: ./.github/workflows/build.yml
+    secrets:
+      READER_TOKEN: ${{ secrets.READER_TOKEN }}
 
   docker-build:
     runs-on: ubuntu-latest
