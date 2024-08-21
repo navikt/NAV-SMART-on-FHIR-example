@@ -14,7 +14,7 @@ according to NAVs requirements.
 
 | Technology | Minimum version |
 |------------|-----------------|
-| Node       | 18              |
+| Node       | 20              |
 | Vite       | 5.3             |
 | Typescript | 5.5             |
 | React      | 18              |
@@ -33,6 +33,48 @@ that the SMART-framework is implemented correctly, and that the FHIR data receiv
 according to Norwegian standard systems.
 
 For example - HPR-number and Norwegian national identity number / D-number are required.
+
+### A note on SMART on FHIR scopes
+
+The scopes used in SMART on FHIR follow a special syntax that allows granularity while following CRUDS operations
+(CREATE, READ, UPDATE, DELETE, SEARCH). This application requests all patient and user scopes using the wildcard `*.*`.
+This can be replaced with `{FHIR resource type}.[c|r|u|d|s]}?param1=value1&param2=value2`. Before implementing
+specific scopes, read ["Scopes for requesting FHIR data"](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhir-resource-scope-syntax)
+and get to know the syntax before implementing.
+
+Basic examples:
+
+_READ access for the selected patient in the EHR system_
+
+| SCOPE             | Results in    |
+|-------------------|---------------|
+| patient/Patient.r | OK            |
+| patient/Patient.* | INVALID SCOPE |
+| patient/*.r       | INVALID SCOPE |
+| patient/*.*       | INVALID SCOPE |
+
+Advanced examples:
+
+_READ and UPDATE access to the selected patient and all its FHIR resources_
+
+| SCOPE                    | Results in    |
+|--------------------------|---------------|
+| `patient/Patient.ru`     | OK            |
+| `patient/Appointment.ru` | OK            |
+| `patient/Observation.ru` | OK            |
+| `patient/*.ru`           | OK            |
+| `patient/Patient.*`      | INVALID SCOPE |
+| `patient/Patient.cds`    | INVALID SCOPE |
+| `patient/Observation.*`  | INVALID SCOPE |
+| `patient/Appointment.*`  | INVALID SCOPE |
+
+_READ access to observations, but only want [fine grained access](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#finer-grained-resource-constraints-using-search-parameters) to laboratory observations_
+
+| SCOPE                                                                                                       | Results in                |
+|-------------------------------------------------------------------------------------------------------------|---------------------------|
+| `patient/Observation.r?category=http://terminology.hl7.org/CodeSystem/observation-category&#124;laboratory` | OK                        |
+| `patient/Observation.r`                                                                                     | OK (but undesired result) |
+
 
 ## Prerequisites
 
@@ -68,7 +110,7 @@ In the browser, execute this in the console and then reload the page:
 If you wish to play around with the SMART startup you can clone this repository and edit the
 [.env](.env) file to test different scopes and `client-id`s.
 
-### SMART launcher
+### Using the SMART launcher
 
 For basic testing and simulated error scenarios you can use the [SMART launcher](https://launch.smarthealthit.org/).
 Ensure you fill in the following fields.
@@ -87,12 +129,16 @@ Ensure you fill in the following fields.
 
 ## From EHR
 
-Set the launch URL of this application to https://TODO.nav.no/launch and
+If your EHR systems FHIR URL is not in the list of allowed [externalHosts](.nais/dev-gcp.json) you must request it to be added.
+Either create a PR on this repository, or contact the [team responsible for maintaining it](https://github.com/orgs/navikt/teams/helseopplysninger).
+
+Set the launch URL of this application to https://nav-on-fhir.ekstern.dev.nav.no/launch and ensure you've registered the
+client-id.
 
 ## SMART launch sequence
 
 1. Register app (client-id) with EHR (one-time step)
-2. Launch the app with [EHR launch](https://hl7.org/fhir/smart-app-launch/STU2.2/app-launch.html#launch-app-ehr-launch)
+2. Launch the app using [EHR launch](https://hl7.org/fhir/smart-app-launch/STU2.2/app-launch.html#launch-app-ehr-launch)
 3. Retrieve `.well-known/smart-configuration`
 4. Obtain authorization code
 5. Obtain access response
