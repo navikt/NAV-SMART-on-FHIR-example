@@ -1,8 +1,6 @@
 # Example SMART on FHIR application
 
-***
-
-#### <span style="color:red">!! THIS APPLICATION IS ONLY FOR TESTING AND MUST NOT BE USED IN PRODUCTION ENVIRONMENTS !!</span>
+<h3 style="color:red">!! THIS APPLICATION IS ONLY FOR TESTING AND MUST NOT BE USED IN PRODUCTION ENVIRONMENTS !!</h3>
 
 ## Context
 
