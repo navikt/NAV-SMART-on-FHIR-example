@@ -1,6 +1,6 @@
 # Example SMART on FHIR application
 
-<h3 style="color:red">!! THIS APPLICATION IS ONLY FOR TESTING AND MUST NOT BE USED IN PRODUCTION ENVIRONMENTS !!</h3>
+$${\color{red}THIS \space APPLICATION \space IS \space ONLY \space FOR \space TESTING \space AND \space MUST \space NOT \space BE \space USED \space IN \space PRODUCTION \space ENVIRONMENTS}$$
 
 ## Context
 
