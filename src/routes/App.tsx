@@ -44,6 +44,7 @@ function App() {
         if (release !== 4) {
           setError(new Error(`The FHIR server must be version R4 to be compliant. Detected version is ${release}.`));
         }
+        console.debug(`✅ FHIR server version is R${release}`);
       }).catch(err => {
         setError(new Error(`Unable to get the FHIR version. ${err.message}`));
       });
