@@ -76,8 +76,6 @@ function App() {
    */
   useEffect(() => {
     if (client) {
-      console.debug("ℹ️ Authorization header that can be sent to the FHIR server", JSON.stringify(client.getAuthorizationHeader()))
-
       if (client.user.fhirUser) {
         switch (client.user.resourceType) {
           case "Practitioner":
@@ -98,7 +96,7 @@ function App() {
             console.warn(`Logged in user is not of required type Practitioner, is instead "${client.user.fhirUser}". Will not ask the FHIR server for data about the logged in user.`);
         }
       } else {
-        setError(new Error(``))
+        console.warn(`Launch context contains no information about the logged in user via a fhirUser claim. Will not ask ask the FHIR server for data about the logged in user.`);
       }
 
       client.request<Patient>(`Patient/${client.patient.id}`).then((fhirPatient: Patient) => {
