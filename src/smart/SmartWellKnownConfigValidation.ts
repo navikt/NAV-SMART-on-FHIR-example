@@ -15,7 +15,13 @@ export function validateWellKnownSmartConfiguration(client: Client): Array<SoFVa
   console.debug("ℹ️ FHIR server URL", fhirServerUrl);
 
   const urlHasSlashSuffix = fhirServerUrl.endsWith("/");
-  const wellKnownSmartConfigURL = `${fhirServerUrl + urlHasSlashSuffix ? "" : "/"}.well-known/smart-configuration`;
+  let wellKnownSmartConfigURL: string;
+
+  if(urlHasSlashSuffix) {
+    wellKnownSmartConfigURL = `${fhirServerUrl}.well-known/smart-configuration`;
+  } else {
+    wellKnownSmartConfigURL = `${fhirServerUrl}/.well-known/smart-configuration`;
+  }
   console.debug("ℹ️ SMART configuration URL", wellKnownSmartConfigURL);
 
   const validations = Array<SoFValidation>();
@@ -24,11 +30,10 @@ export function validateWellKnownSmartConfiguration(client: Client): Array<SoFVa
     if (!response.ok) {
       throw new Error(`Received ${response.status} when fetching .well-known/smart-configuration.`);
     }
-    const wellKnown = response.json();
-    console.debug("ℹ️ .well-known/smart-configuration", wellKnown);
-
-    return wellKnown;
+    return response.json();
   }).then((config: SmartConfiguration) => {
+    console.debug("ℹ️ .well-known/smart-configuration", config);
+
     // REQUIRED fields
     if (!config.issuer) {
       validations.push(new SoFValidation(`Missing REQUIRED field issuer in ${wellKnownSmartConfigURL}`, Severity.ERROR));
