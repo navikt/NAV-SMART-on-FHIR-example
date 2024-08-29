@@ -33,6 +33,8 @@ function App() {
    */
   useEffect(() => {
     SMART.ready().then(client => {
+      console.debug("✅ The client is initialized and ready to fetch from the FHIR server.", client);
+
       const smartConfigValidationResults = validateWellKnownSmartConfiguration(client);
       setValResults(smartConfigValidationResults);
 
@@ -74,7 +76,7 @@ function App() {
    */
   useEffect(() => {
     if (client) {
-      console.debug("✅ The client is initialized and ready to fetch from the FHIR server.", client);
+      console.debug("ℹ️ Authorization header that can be sent to the FHIR server", JSON.stringify(client.getAuthorizationHeader()))
 
       if (client.user.fhirUser) {
         switch (client.user.resourceType) {
@@ -95,6 +97,8 @@ function App() {
           default:
             console.warn(`Logged in user is not of required type Practitioner, is instead "${client.user.fhirUser}". Will not ask the FHIR server for data about the logged in user.`);
         }
+      } else {
+        setError(new Error(``))
       }
 
       client.request<Patient>(`Patient/${client.patient.id}`).then((fhirPatient: Patient) => {
@@ -125,7 +129,7 @@ function App() {
       <ErrorPage error={error}/> :
       <div id="information">
         <ValidationInfo results={valResults}/>
-        <br />
+        <br/>
         <FhirInformation practitioner={loggedInUser as Practitioner} patient={patient} encounter={encounter}/>
       </div>
     }
