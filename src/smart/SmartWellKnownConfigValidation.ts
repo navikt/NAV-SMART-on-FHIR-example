@@ -12,6 +12,8 @@ import Client from "fhirclient/lib/Client";
  */
 export function validateWellKnownSmartConfiguration(client: Client): Array<SoFValidation> {
   const fhirServerUrl: string = client.getState("serverUrl");
+  console.debug("ℹ️ FHIR server URL", fhirServerUrl);
+
   const urlHasSlashSuffix = fhirServerUrl.endsWith("/");
   const wellKnownSmartConfigURL = `${fhirServerUrl + urlHasSlashSuffix ? "" : "/"}.well-known/smart-configuration`;
   console.debug("ℹ️ SMART configuration URL", wellKnownSmartConfigURL);
@@ -22,7 +24,10 @@ export function validateWellKnownSmartConfiguration(client: Client): Array<SoFVa
     if (!response.ok) {
       throw new Error(`Received ${response.status} when fetching .well-known/smart-configuration.`);
     }
-    return response.json();
+    const wellKnown = response.json();
+    console.debug("ℹ️ .well-known/smart-configuration", wellKnown);
+
+    return wellKnown;
   }).then((config: SmartConfiguration) => {
     // REQUIRED fields
     if (!config.issuer) {
