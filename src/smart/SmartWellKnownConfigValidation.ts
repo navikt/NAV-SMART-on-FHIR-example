@@ -12,7 +12,7 @@ import Client from "fhirclient/lib/Client";
  */
 export function validateWellKnownSmartConfiguration(client: Client): Array<SoFValidation> {
   const fhirServerUrl: string = client.getState("serverUrl");
-  console.debug("ℹ️ FHIR server URL", fhirServerUrl);
+  console.debug("ℹ️ FHIR server URL:", fhirServerUrl);
 
   const urlHasSlashSuffix = fhirServerUrl.endsWith("/");
   let wellKnownSmartConfigURL: string;
@@ -22,9 +22,9 @@ export function validateWellKnownSmartConfiguration(client: Client): Array<SoFVa
   } else {
     wellKnownSmartConfigURL = `${fhirServerUrl}/.well-known/smart-configuration`;
   }
-  console.debug("ℹ️ SMART configuration URL", wellKnownSmartConfigURL);
+  console.debug("ℹ️ SMART configuration URL:", wellKnownSmartConfigURL);
 
-  const validations = Array<SoFValidation>();
+  const validations = new Array<SoFValidation>();
 
   fetch(wellKnownSmartConfigURL).then(response => {
     if (!response.ok) {
@@ -32,7 +32,7 @@ export function validateWellKnownSmartConfiguration(client: Client): Array<SoFVa
     }
     return response.json();
   }).then((config: SmartConfiguration) => {
-    console.debug("ℹ️ .well-known/smart-configuration", config);
+    console.debug("ℹ️ .well-known/smart-configuration:", config);
 
     // REQUIRED fields
     if (!config.issuer) {
