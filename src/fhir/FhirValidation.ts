@@ -5,31 +5,24 @@ import {validateFhirPatientInformation} from "./FhirPatientValidation.ts";
 import {validateFhirEncounterInformation} from "./FhirEncounterValidation.ts";
 import {SoFValidation} from "../utils/Validation.ts";
 
-export function useValidation(loggedInUser: Practitioner | undefined, patient: Patient | undefined, encounter: Encounter | undefined, setValResults: Function) {
-  useEffect(() => {
-    if (loggedInUser) {
-      const practitionerValidation = validateFhirPractitionerInformation(loggedInUser);
-      if (practitionerValidation) {
-        setValResults((prevResults: Array<SoFValidation>) => [...prevResults, practitionerValidation]);
-      }
-    }
-  }, [loggedInUser]);
+export function useValidation(
+  loggedInUser: Practitioner | undefined,
+  patient: Patient | undefined,
+  encounter: Encounter | undefined,
+  setValResults: (results: (prevResults: Array<SoFValidation>) => SoFValidation[]) => void) {
 
   useEffect(() => {
     if (patient) {
-      const patientValidation = validateFhirPatientInformation(patient);
-      if (patientValidation) {
-        setValResults((prevResults: Array<SoFValidation>) => [...prevResults, patientValidation]);
-      }
-    }
-  }, [patient]);
+      const practitionerVal = validateFhirPractitionerInformation(loggedInUser);
+      const patientVal = validateFhirPatientInformation(patient);
+      const encounterVal = validateFhirEncounterInformation(encounter);
 
-  useEffect(() => {
-    if (encounter) {
-      const encounterValidation = validateFhirEncounterInformation(encounter);
-      if (encounterValidation) {
-        setValResults((prevResults: Array<SoFValidation>) => [...prevResults, encounterValidation]);
-      }
+      setValResults((prevResults: Array<SoFValidation>) => [
+        ...prevResults,
+        ...practitionerVal,
+        ...patientVal,
+        ...encounterVal
+      ]);
     }
-  }, [encounter]);
+  }, []);
 }
