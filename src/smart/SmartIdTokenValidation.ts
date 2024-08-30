@@ -13,10 +13,10 @@ export function validateIdTokenInformation(client: Client): Array<SoFValidation>
   const clientId: string = authOptions.clientId as string;
   const idToken = client.getIdToken();
 
-  console.debug("ℹ️ Requested OIDC scope(s)", scopes);
-  console.debug("ℹ️ ID Token as requested via openid scope", JSON.stringify(idToken));
+  console.debug("ℹ️ Requested OIDC scope(s):", scopes);
+  console.debug("ℹ️ ID Token as requested via openid scope:", JSON.stringify(idToken));
 
-  const validations = Array<SoFValidation>();
+  const validations = new Array<SoFValidation>();
 
   if (idToken) {
     const fhirServerUrl: string = client.getState("serverUrl");
