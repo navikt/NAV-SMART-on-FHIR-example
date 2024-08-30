@@ -1,45 +1,41 @@
 import Client from "fhirclient/lib/Client";
 import {useEffect, useState} from "react";
 import {Encounter, Patient, Practitioner} from "fhir/r4";
+import {handleError} from "../utils/ErrorHandler.ts";
 
 export function useFhirData(client: Client | undefined) {
-  const [loggedInUser, setLoggedInUser] = useState<Practitioner>();
-  const [patient, setPatient] = useState<Patient>();
-  const [encounter, setEncounter] = useState<Encounter>();
-  const [error, setError] = useState<Error>();
+  const [loggedInUser, setLoggedInUser] = useState<Practitioner | undefined>(undefined);
+  const [patient, setPatient] = useState<Patient | undefined>(undefined);
+  const [encounter, setEncounter] = useState<Encounter | undefined>(undefined);
+  const [error, setError] = useState<string | undefined>(undefined);
 
   useEffect(() => {
-    if (!client) {
-      return;
-    }
+    if (!client) return;
 
-    if (client.user.fhirUser) {
-      if(client.user.resourceType === "Practitioner") {
-        client.request<Practitioner>(client.user.fhirUser).then((fhirPractitioner: Practitioner) => {
-          console.debug("✅ Successfully polled the FHIR API for information about the logged in user:", fhirPractitioner);
+    const fetchData = async () => {
+      try {
+        if (client.user.fhirUser && client.user.resourceType === "Practitioner") {
+          const fhirPractitioner = await client.request<Practitioner>(client.user.fhirUser);
+          console.debug("✅ Practitioner data fetched:", fhirPractitioner);
           setLoggedInUser(fhirPractitioner);
-        }).catch((err: Error) => setError(new Error(`Unable to fetch data about the logged in user from the FHIR API. ${err.message}`)));
-      } else {
-        console.warn(`⚠️ Logged in user is not of required type Practitioner, is instead "${client.user.fhirUser}". Will not ask the FHIR server for data about the logged in user.`);
+        } else {
+          console.warn(`⚠️ Logged in user is not set or not the correct type "Practitioner". FhirUser claim: ${client.user.fhirUser}. ResourceType: ${client.user.resourceType}`);
+        }
+
+        const fhirPatient = await client.request<Patient>(`Patient/${client.patient.id}`);
+        console.debug("✅ Patient data fetched:", fhirPatient);
+        setPatient(fhirPatient);
+
+        const fhirEncounter = await client.request<Encounter>(`Encounter/${client.encounter.id}`);
+        console.debug("✅ Encounter data fetched:", fhirEncounter);
+        setEncounter(fhirEncounter);
+      } catch (err) {
+        setError(handleError("Unable to fetch FHIR data", err));
       }
-    } else {
-      console.warn(`⚠️ Launch context contains no information about the logged in user via a fhirUser claim. Will not ask ask the FHIR server for data about the logged in user.`);
-    }
+    };
 
-    client.request<Patient>(`Patient/${client.patient.id}`).then((fhirPatient: Patient) => {
-      console.debug("ℹ️ TODO Patient info:", fhirPatient);
-      setPatient(fhirPatient);
-    }).catch((err: Error) => {
-      setError(new Error(`Unable to fetch data about the Patient from the FHIR API. ${err.message}`));
-    });
-
-    client.request<Encounter>(`Encounter/${client.encounter.id}`).then((fhirEncounter: Encounter) => {
-      console.debug("ℹ️ TODO Encounter info:", fhirEncounter);
-      setEncounter(fhirEncounter);
-    }).catch((err: Error) => {
-      setError(new Error(`Unable to fetch data about the Encounter from the FHIR API. ${err.message}`));
-    });
+    fetchData();
   }, [client]);
 
-  return { loggedInUser, patient, encounter, error }
+  return {loggedInUser, patient, encounter, error};
 }

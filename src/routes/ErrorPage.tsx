@@ -1,5 +1,5 @@
 interface ErrorPageProps {
-  error: Error;
+  error: string;
 }
 
 export default function ErrorPage({error}: ErrorPageProps) {
@@ -17,8 +17,7 @@ export default function ErrorPage({error}: ErrorPageProps) {
         <li>The FHIR server supports FHIR version R4</li>
       </ul>
       <br/>
-      <p>Error:<br/><i>{(error as Error)?.message ||
-        (error as { statusText?: string })?.statusText}</i></p>
+      <p>Error:<br/><i>{error}</i></p>
       <p>
       </p>
     </div>
