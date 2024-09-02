@@ -18,6 +18,9 @@ export default function PractitionerInformation({practitioner}: PractitionerInfo
       <h3>Practitioner is not present on the FHIR API</h3>
     </div>);
   } else {
+    Object.entries(practitioner).forEach(([key, value]) => {
+      console.debug(`ℹ️ Practitioner.${key}: ${value}`);
+    })
     return (<div>
         <h3>Practitioner Information</h3>
         <table>
