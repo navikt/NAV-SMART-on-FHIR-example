@@ -115,7 +115,7 @@ export default function SmartConfigValidation({client}: SmartConfigValidationPro
           <p>{error}</p>
         </div>
         :
-        <ValidationTable validationTitle={"Results of validating .well-known/smart-configuration"}
+        <ValidationTable validationTitle={"SMART configuration validation"}
                          validations={validations}/>
       }
     </div>

@@ -35,7 +35,7 @@ export default function EncounterValidation({client}: EncounterValidationProps) 
           <p>{error}</p>
         </div>
         :
-        <ValidationTable validationTitle={"Results of validating the encounter"}
+        <ValidationTable validationTitle={"Encounter validation"}
                          validations={validations}/>
       }
     </div>

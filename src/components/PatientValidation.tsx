@@ -42,7 +42,7 @@ export default function PatientValidation({client}: PatientValidationProps) {
           <p>{error}</p>
         </div>
         :
-        <ValidationTable validationTitle={"Results of validating the patient"}
+        <ValidationTable validationTitle={"Patient validation"}
                          validations={validations}/>
       }
     </div>

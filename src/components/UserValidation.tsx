@@ -46,7 +46,7 @@ export default function UserValidation({client}: UserValidationProps) {
           <p>{error}</p>
         </div>
         :
-        <ValidationTable validationTitle={"Results of validating the user"}
+        <ValidationTable validationTitle={"User validation"}
                          validations={validations}/>
       }
     </div>

@@ -18,9 +18,9 @@ export default function ValidationTable({validationTitle, validations}: Validati
 
   return (
     <div>
+      <h4>{validationTitle}</h4>
       {validations.length > 0 ?
         <table>
-          <caption>{validationTitle}</caption>
           <thead>
           <tr>
             <th>Severity</th>
