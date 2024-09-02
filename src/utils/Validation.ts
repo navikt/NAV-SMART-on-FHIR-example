@@ -4,7 +4,7 @@ export enum Severity {
   ERROR = "🚫"
 }
 
-export class SoFValidation {
+export class Validation {
   message: string;
   severity: Severity;
 
