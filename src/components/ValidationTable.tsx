@@ -17,22 +17,28 @@ export default function ValidationTable({validationTitle, validations}: Validati
   const sortedValidations = [...validations].sort((a, b) => severityRank[b.severity] - severityRank[a.severity]);
 
   return (
-    <table>
-      <caption>{validationTitle}</caption>
-      <thead>
-      <tr>
-        <th>Severity</th>
-        <th>Message</th>
-      </tr>
-      </thead>
-      <tbody>
-      {sortedValidations.map((validation, index) => (
-        <tr key={index}>
-          <td>{validation.severity}</td>
-          <td>{validation.message}</td>
-        </tr>
-      ))}
-      </tbody>
-    </table>
+    <div>
+      {validations.length > 0 ?
+        <table>
+          <caption>{validationTitle}</caption>
+          <thead>
+          <tr>
+            <th>Severity</th>
+            <th>Message</th>
+          </tr>
+          </thead>
+          <tbody>
+          {sortedValidations.map((validation, index) => (
+            <tr key={index}>
+              <td>{validation.severity}</td>
+              <td>{validation.message}</td>
+            </tr>
+          ))}
+          </tbody>
+        </table>
+        :
+        <h4>✅ No issues to report</h4>
+      }
+    </div>
   );
 }
