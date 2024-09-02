@@ -18,26 +18,25 @@ export default function ValidationTable({validationTitle, validations}: Validati
 
   return (
     <div>
-      <h4>{validationTitle}</h4>
       {validations.length > 0 ?
-        <table>
-          <thead>
-          <tr>
-            <th>Severity</th>
-            <th>Message</th>
+        <table className="text-left w-full border-2 border-collapse">
+          <thead className="text-neutral-200 uppercase bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200">
+          <tr className="border-2 border-neutral-800">
+            <th className="px-6 py-2">Severity</th>
+            <th className="px-6 py-2">{validationTitle} results</th>
           </tr>
           </thead>
           <tbody>
           {sortedValidations.map((validation, index) => (
-            <tr key={index}>
-              <td>{validation.severity}</td>
-              <td>{validation.message}</td>
+            <tr key={index} className="border-2 border-neutral-800">
+              <td className={validation.severity === Severity.ERROR ? "px-6 py-4 text-red-500" : validation.severity === Severity.WARNING ? "px-6 py-4 text-yellow-400" : "px-6 py-4 text-blue-200"}>{validation.severity.toString()}</td>
+              <td className="px-6 py-2 dark:text-neutral-200">{validation.message}</td>
             </tr>
           ))}
           </tbody>
         </table>
         :
-        <h4>✅ No issues to report</h4>
+        <h4>✅ No issues to report for {validationTitle}</h4>
       }
     </div>
   );

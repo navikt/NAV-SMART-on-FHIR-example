@@ -19,7 +19,7 @@ export default function EncounterValidation({client}: EncounterValidationProps) 
     client.request<Encounter>(`Encounter/${client.encounter.id}`).then(fhirEncounter => {
       console.debug("✅ Encounter data fetched");
       Object.entries(fhirEncounter).forEach(([key, value]) => {
-        console.debug(`ℹ️ Encounter.${key}: ${value}`);
+        console.debug(`ℹ️ Encounter.${key}:`, value);
       });
 
       const newValidations: Validation[] = [];
@@ -28,7 +28,7 @@ export default function EncounterValidation({client}: EncounterValidationProps) 
   }, [client]);
 
   return (
-    <div>
+    <div className="basis-1/5">
       {error ?
         <div>
           <h4>An error occurred when fetching Encounter information.</h4>

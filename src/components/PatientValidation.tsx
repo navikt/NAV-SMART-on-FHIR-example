@@ -19,7 +19,7 @@ export default function PatientValidation({client}: PatientValidationProps) {
     client.request<Patient>(`Patient/${client.patient.id}`).then(fhirPatient => {
       console.debug("✅ Patient data fetched");
       Object.entries(fhirPatient).forEach(([key, value]) => {
-        console.debug(`ℹ️ Patient.${key}: ${value}`);
+        console.debug(`ℹ️ Patient.${key}:`, JSON.stringify(value));
       });
 
       const newValidations: Validation[] = [];
@@ -35,7 +35,7 @@ export default function PatientValidation({client}: PatientValidationProps) {
   }, [client]);
 
   return (
-    <div>
+    <div className="basis-1/5 w-full">
       {error ?
         <div>
           <h4>An error occurred when fetching Patient information.</h4>

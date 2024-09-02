@@ -20,7 +20,7 @@ export default function UserValidation({client}: UserValidationProps) {
       client.request<Practitioner>(client.user.fhirUser).then(fhirPractitioner => {
         console.debug("✅ Practitioner data fetched");
         Object.entries(fhirPractitioner).forEach(([key, value]) => {
-          console.debug(`ℹ️ Practitioner.${key}: ${value}`);
+          console.debug(`ℹ️ Practitioner.${key}:`, value);
         });
 
         const newValidations: Validation[] = [];
@@ -39,7 +39,7 @@ export default function UserValidation({client}: UserValidationProps) {
   }, [client]);
 
   return (
-    <div>
+    <div className="basis-1/5">
       {error ?
         <div>
           <h4>An error occurred when fetching User information.</h4>

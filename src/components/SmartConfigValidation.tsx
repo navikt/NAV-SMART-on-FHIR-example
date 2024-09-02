@@ -108,7 +108,7 @@ export default function SmartConfigValidation({client}: SmartConfigValidationPro
   }, [client]);
 
   return (
-    <div>
+    <div className="basis-1/5">
       {error ?
         <div>
           <h4>An error occurred while fetching .well-known/smart-configuration</h4>

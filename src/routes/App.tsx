@@ -1,4 +1,3 @@
-import "./App.css";
 import ErrorPage from "./ErrorPage.tsx";
 import {useSmartClient} from "../smart/SmartClient.ts";
 import SmartConfigValidation from "../components/SmartConfigValidation.tsx";
@@ -12,9 +11,10 @@ function App() {
 
   const error = smartError;
   return <div>
+    <p className="text-lg text-center pb-8">NAV SMART on FHIR compliance test</p>
     {error ?
       <ErrorPage error={error}/> :
-      <div id="validations">
+      <div className="flex flex-col">
         <SmartConfigValidation client={client}/>
         <br/>
         <IdTokenValidation client={client}/>

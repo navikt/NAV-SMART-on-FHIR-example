@@ -1,7 +1,7 @@
 export enum Severity {
-  INFO = "ℹ️",
-  WARNING = "⚠️",
-  ERROR = "🚫"
+  INFO = "INFO",
+  WARNING = "WARNING",
+  ERROR = "ERROR"
 }
 
 export class Validation {

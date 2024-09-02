@@ -75,6 +75,10 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
     setValidations(newValidations);
   }, [client]);
 
-  return (<ValidationTable validationTitle={"ID token validation"}
-                           validations={validations}/>);
+  return (
+    <div className="basis-1/5">
+      <ValidationTable validationTitle={"ID token validation"}
+                       validations={validations}/>
+    </div>
+  );
 }
