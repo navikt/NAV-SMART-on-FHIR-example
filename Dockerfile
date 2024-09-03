@@ -10,6 +10,8 @@ COPY ./tsconfig.app.json /app/tsconfig.app.json
 COPY ./tsconfig.json /app/tsconfig.json
 COPY ./tsconfig.node.json /app/tsconfig.node.json
 COPY ./vite.config.ts /app/vite.config.ts
+COPY ./postcss.config.js /app/postcss.config.js
+COPY ./tailwind.config.js /app/tailwind.config.js
 RUN npm run build
 
 FROM node:22-alpine AS runtime
