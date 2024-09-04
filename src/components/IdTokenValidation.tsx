@@ -3,6 +3,7 @@ import {Severity, Validation} from "../utils/Validation.ts";
 import {useEffect, useState} from "react";
 import {authOptions} from "../fhir/FhirAuth.ts";
 import ValidationTable from "./ValidationTable.tsx";
+import {isUUIDv4} from "../utils/Matcher.ts";
 
 export interface IdTokenValidationProps {
   readonly client: Client | undefined;
@@ -24,6 +25,12 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
     const clientId: string = authOptions.clientId as string;
     const idToken = client.getIdToken();
 
+    const allowedResourceTypes = {
+      Practitioner: "Practitioner",
+      Patient: "Patient",
+      RelatedPerson: "RelatedPerson"
+    };
+
     console.debug("ℹ️ Requested OIDC scope(s):", scopes);
     console.debug("ℹ️ ID Token as requested via openid scope:", JSON.stringify(idToken));
 
@@ -31,17 +38,65 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
 
     if (idToken) {
       const fhirServerUrl: string = client.getState("serverUrl");
-      const fhirUser = idToken["fhirUser"];
+      const fhirUser = idToken["fhirUser"] as string;
       const profile = idToken.profile;
       const issuer = idToken.iss;
       const audience = idToken.aud;
 
+      /**
+       * fhirUser claim, if present, is expected to follow the format
+       * {resourceType}/{resourceId}. However, in some cases the claim
+       * can contain the full URL to the resource, for example:
+       *
+       * https://fhir.example.com/Practitioner/{practitioner-uuid}
+       *
+       * The client library handles this, therefore the url part is
+       * ignored. Expected format is therefore
+       * {Practitioner | Patient | RelatedPerson}/{resource-uuid}
+       */
       if (!fhirUser) {
         newValidations.push(new Validation(`ID token is missing the "fhirUser" claim`, Severity.ERROR));
+      } else {
+        const split = fhirUser.split("/").slice(-2); // Take the last two segments (resourceType/resourceId)
+
+        if (split.length !== 2) {
+          newValidations.push(new Validation(`"fhirUser" claim is not properly formatted`, Severity.ERROR));
+        } else {
+          const [resourceType, resourceId] = split;
+
+          // Check if the resourceType is valid
+          if (![allowedResourceTypes.Practitioner, allowedResourceTypes.Patient, allowedResourceTypes.RelatedPerson].includes(resourceType)) {
+            newValidations.push(new Validation(`"fhirUser" claim MUST contain the resource type Practitioner, Patient, or RelatedPerson, but was ${resourceType}`, Severity.ERROR));
+          }
+
+          // Validate the resourceId as a UUID v4
+          if (!isUUIDv4(resourceId)) {
+            newValidations.push(new Validation(`"fhirUser" resource ID must be of type UUID v4 but was ${resourceId}`, Severity.ERROR));
+          }
+        }
       }
 
+
+      /**
+       * profile claim, if present, can be represented in the same way
+       * as the fhirUser claim, or as just the uuid of the resource.
+       */
       if (!profile) {
         newValidations.push(new Validation(`ID token is missing the "profile" claim`, Severity.ERROR));
+      } else {
+        const split = profile.split("/").slice(-2); // Take the last two segments of the URL or just the UUID
+
+        // Determine the resourceId and resourceType based on how the profile is formatted
+        const resourceId = split.length === 2 ? split[1] : split[0];
+        const resourceType = split.length === 2 ? split[0] : null;
+
+        if (resourceType && ![allowedResourceTypes.Practitioner, allowedResourceTypes.Patient, allowedResourceTypes.RelatedPerson].includes(resourceType)) {
+          newValidations.push(new Validation(`"profile" claim MUST contain the resource type Practitioner, Patient, or RelatedPerson, but was ${resourceType}`, Severity.ERROR));
+        }
+
+        if (!isUUIDv4(resourceId)) {
+          newValidations.push(new Validation(`"profile" resource ID must be of type UUID v4 but was ${resourceId}`, Severity.ERROR));
+        }
       }
 
       if (issuer) {
@@ -58,15 +113,6 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
         }
       } else {
         newValidations.push(new Validation(`ID token is missing the "aud" claim`, Severity.ERROR));
-      }
-
-      if (client.user) {
-        const loggedInUser = client.user;
-
-        // Use .endsWith() since the fhirUser scope _MAY_ be absolute (e.g. https://epj.eksempel.no/Practitioner/{uuid}
-        if (!loggedInUser.fhirUser?.endsWith(`${loggedInUser.resourceType}/${loggedInUser.id}`)) {
-          newValidations.push(new Validation("The fhirUser scope must follow the format (optional){fhirAPI}/{resourceType}/{resourceId}", Severity.ERROR));
-        }
       }
     } else {
       newValidations.push(new Validation(`Missing ID token which was requested by the openid scope.`, Severity.ERROR));
