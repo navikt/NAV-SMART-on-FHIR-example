@@ -11,7 +11,7 @@ function App() {
 
   const error = smartError;
   return <div>
-    <p className="text-lg text-center pb-8">NAV SMART on FHIR compliance test</p>
+    <p className="text-3xl text-center pb-5">NAV SMART on FHIR compliance test</p>
     {error ?
       <ErrorPage error={error}/> :
       <div className="flex flex-col">

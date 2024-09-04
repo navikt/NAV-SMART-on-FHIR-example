@@ -29,7 +29,9 @@ export default function ValidationTable({validationTitle, validations}: Validati
           <tbody>
           {sortedValidations.map((validation, index) => (
             <tr key={index} className="border-2 border-neutral-800">
-              <td className={validation.severity === Severity.ERROR ? "px-6 py-4 text-red-500" : validation.severity === Severity.WARNING ? "px-6 py-4 text-yellow-400" : "px-6 py-4 text-blue-200"}>{validation.severity.toString()}</td>
+              <td className={`px-6 py-4 text-${validation.severity === Severity.ERROR ? "red-500" : validation.severity === Severity.WARNING ? "yellow-400" : "blue-200"}`}>
+                {validation.severity}
+              </td>
               <td className="px-6 py-2 dark:text-neutral-200">{validation.message}</td>
             </tr>
           ))}

@@ -35,7 +35,7 @@ export default function PatientValidation({client}: PatientValidationProps) {
   }, [client]);
 
   return (
-    <div className="basis-1/5 w-full">
+    <div className="basis-1/5">
       {error ?
         <div>
           <h4>An error occurred when fetching Patient information.</h4>
