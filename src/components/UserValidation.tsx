@@ -9,6 +9,15 @@ export interface UserValidationProps {
   readonly client: Client | undefined;
 }
 
+/**
+ * UserValidation will extract the logged-in user from the FHIR client
+ * and validate the results accordingly. The user is set based on the
+ * id_token claims fhirUser _or_ profile as requested by the scopes.
+ *
+ * @see https://github.com/smart-on-fhir/client-js/blob/master/src/Client.ts#L576-L593
+ *
+ * @param client - The FHIR client instance
+ */
 export default function UserValidation({client}: UserValidationProps) {
   const [validations, setValidations] = useState<Validation[]>();
   const [error, setError] = useState<string>();
