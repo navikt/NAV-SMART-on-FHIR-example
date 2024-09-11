@@ -27,10 +27,18 @@ export default function PatientValidation({client}: PatientValidationProps) {
       /**
        * @see https://www.ehelse.no/teknisk-dokumentasjon/oid-identifikatorserier-i-helse-og-omsorgstjenesten#nasjonale-identifikatorserier-for-personer
        */
-      const norwegianNationalIdentifierSystem = fhirPatient.identifier?.find(id => id.system === "urn:oid:2.16.578.1.12.4.1.4.1");
+      const personalIdentifierSystem = "2.16.578.1.12.4.1.4.1";
+      const dNumberSystem = "2.16.578.1.12.4.1.4.2";
 
+      const norwegianNationalIdentifierSystem = fhirPatient.identifier?.find(id => id.system === personalIdentifierSystem);
+      const norwegianDNumberSystem = fhirPatient.identifier?.find(id => id.system === dNumberSystem);
+
+      // If FNR is not present, a D-number is expected. If D-number is present the patient has a valid Norwegian identifier
       if (!norwegianNationalIdentifierSystem) {
-        newValidations.push(new Validation(`The Patient does not have a norwegian national identity number (FNR) from URN OID number "urn:oid:2.16.578.1.12.4.1.4.1"`, Severity.ERROR));
+        if (!norwegianDNumberSystem) {
+          newValidations.push(new Validation(`The Patient does not have a Norwegian national identity number (FNR) from OID "urn:oid:${personalIdentifierSystem}"`, Severity.ERROR));
+          newValidations.push(new Validation(`The Patient does not have a Norwegian D-number from OID "urn:oid:${dNumberSystem}"`, Severity.ERROR));
+        }
       }
 
       setValidations(newValidations);
