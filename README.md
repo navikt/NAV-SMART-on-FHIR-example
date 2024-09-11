@@ -32,47 +32,6 @@ according to Norwegian standard systems.
 
 For example - HPR-number and Norwegian national identity number / D-number are required.
 
-### A note on SMART on FHIR scopes
-
-The scopes used in SMART on FHIR follow a special syntax that allows granularity while following CRUDS operations
-(CREATE, READ, UPDATE, DELETE, SEARCH). This application requests all patient and user scopes using the wildcard `*.*`.
-This can be replaced with `{FHIR resource type}.[c|r|u|d|s]}?param1=value1&param2=value2`. Before implementing
-specific scopes, read ["Scopes for requesting FHIR data"](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhir-resource-scope-syntax)
-and get to know the syntax before implementing.
-
-Basic examples:
-
-_READ access for the selected patient in the EHR system_
-
-| SCOPE             | Results in    |
-|-------------------|---------------|
-| patient/Patient.r | OK            |
-| patient/Patient.* | INVALID SCOPE |
-| patient/*.r       | INVALID SCOPE |
-| patient/*.*       | INVALID SCOPE |
-
-Advanced examples:
-
-_READ and UPDATE access to the selected patient and all its FHIR resources_
-
-| SCOPE                    | Results in    |
-|--------------------------|---------------|
-| `patient/Patient.ru`     | OK            |
-| `patient/Appointment.ru` | OK            |
-| `patient/Observation.ru` | OK            |
-| `patient/*.ru`           | OK            |
-| `patient/Patient.*`      | INVALID SCOPE |
-| `patient/Patient.cds`    | INVALID SCOPE |
-| `patient/Observation.*`  | INVALID SCOPE |
-| `patient/Appointment.*`  | INVALID SCOPE |
-
-_READ access to observations, but only want [fine grained access](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#finer-grained-resource-constraints-using-search-parameters) to laboratory observations_
-
-| SCOPE                                                                                                       | Results in                |
-|-------------------------------------------------------------------------------------------------------------|---------------------------|
-| `patient/Observation.r?category=http://terminology.hl7.org/CodeSystem/observation-category&#124;laboratory` | OK                        |
-| `patient/Observation.r`                                                                                     | OK (but undesired result) |
-
 
 ## Prerequisites
 
@@ -172,3 +131,44 @@ client-id.
         EHR -->> NAV: Authorization error
     end
 ```
+
+## A note on SMART on FHIR scopes
+
+The scopes used in SMART on FHIR follow a special syntax that allows granularity while following CRUDS operations
+(CREATE, READ, UPDATE, DELETE, SEARCH). This application requests all patient and user scopes using the wildcard `*.*`.
+This can be replaced with `{FHIR resource type}.[c|r|u|d|s]}?param1=value1&param2=value2`. Before implementing
+specific scopes, read ["Scopes for requesting FHIR data"](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhir-resource-scope-syntax)
+and get to know the syntax before implementing.
+
+Basic examples:
+
+_READ access for the selected patient in the EHR system_
+
+| SCOPE             | Results in    |
+|-------------------|---------------|
+| patient/Patient.r | OK            |
+| patient/Patient.* | INVALID SCOPE |
+| patient/*.r       | INVALID SCOPE |
+| patient/*.*       | INVALID SCOPE |
+
+Advanced examples:
+
+_READ and UPDATE access to the selected patient and all its FHIR resources_
+
+| SCOPE                    | Results in    |
+|--------------------------|---------------|
+| `patient/Patient.ru`     | OK            |
+| `patient/Appointment.ru` | OK            |
+| `patient/Observation.ru` | OK            |
+| `patient/*.ru`           | OK            |
+| `patient/Patient.*`      | INVALID SCOPE |
+| `patient/Patient.cds`    | INVALID SCOPE |
+| `patient/Observation.*`  | INVALID SCOPE |
+| `patient/Appointment.*`  | INVALID SCOPE |
+
+_READ access to observations, but only want [fine grained access](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#finer-grained-resource-constraints-using-search-parameters) to laboratory observations_
+
+| SCOPE                                                                                                       | Results in                |
+|-------------------------------------------------------------------------------------------------------------|---------------------------|
+| `patient/Observation.r?category=http://terminology.hl7.org/CodeSystem/observation-category&#124;laboratory` | OK                        |
+| `patient/Observation.r`                                                                                     | OK (but undesired result) |
