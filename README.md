@@ -32,6 +32,97 @@ according to Norwegian standard systems.
 
 For example - HPR-number and Norwegian national identity number / D-number are required.
 
+## Validation expectations
+
+### SMART on FHIR
+
+#### [.well-known/smart-configuration](https://hl7.org/fhir/smart-app-launch/conformance.html#metadata)
+
+```json
+{
+  "issuer": "CONDITIONAL, String conveying this system’s OpenID Connect Issuer URL. Required if the server’s capabilities include sso-openid-connect; otherwise, omitted.",
+  "jwks_uri": "CONDITIONAL, String conveying this system’s JSON Web Key Set URL. Required if the server’s capabilities include sso-openid-connect; otherwise, optional.",
+  "authorization_endpoint": "CONDITIONAL, URL to the OAuth2 authorization endpoint. Required if server supports the launch-ehr or launch-standalone capability; otherwise, optional.",
+  "grant_types_supported": "REQUIRED, Array of grant types supported at the token endpoint. The options are “authorization_code” (when SMART App Launch is supported) and “client_credentials” (when SMART Backend Services is supported).",
+  "token_endpoint": "REQUIRED, URL to the OAuth2 token endpoint.",
+  "capabilities": "REQUIRED, Array of strings representing SMART capabilities (e.g., sso-openid-connect or launch-standalone) that the server supports.",
+  "code_challenge_methods_supported": "REQUIRED, Array of PKCE code challenge methods supported. The S256 method SHALL be included in this list, and the plain method SHALL NOT be included in this list.",
+  "user_access_brand_bundle": "RECOMMENDED, URL for a Brand Bundle-",
+  "user_access_brand_identifier": "RECOMMENDED, Identifier for the primary entry in a Brand Bundle.",
+  "scopes_supported": "RECOMMENDED, Array of scopes a client may request. The server SHALL support all scopes listed here; additional scopes MAY be supported (so clients should not consider this an exhaustive list).",
+  "response_types_supported": "RECOMMENDED, Array of OAuth2 response_type values that are supported. Implementers can refer to response_types defined in OAuth 2.0 (RFC 6749) and in OIDC Core.",
+  "management_endpoint": "RECOMMENDED, URL where an end-user can view which applications currently have access to data and can make adjustments to these access rights.",
+  "introspection_endpoint": "RECOMMENDED, URL to a server’s introspection endpoint that can be used to validate a token.",
+  "revocation_endpoint": "RECOMMENDED, URL to a server’s revoke endpoint that can be used to revoke a token."
+}
+```
+
+#### [tokenResponse](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#launch-context-arrives-with-your-access_token)
+
+```json
+{
+  "access_token": "abjfdksla...",
+  "id_token": "abjfdksla...",
+  "refresh_token": "abjfdksla...",
+  "patient": "fhir-patient-id",
+  "encounter": "fhir-encounter-id",
+  ...
+}
+```
+
+#### [id_token](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#scopes-for-requesting-identity-data)
+
+```json
+{
+  "profile": "fhir-practitioner-id or Practitioner/fhir-practitioner-id",
+  "fhirUser": "Practitioner/fhir-practitioner-id",
+  ...
+}
+```
+
+### FHIR data
+
+This app only checks that the `system` is valid according to the Norwegian identifiers (OID) which is described [here](https://www.ehelse.no/teknisk-dokumentasjon/oid-identifikatorserier-i-helse-og-omsorgstjenesten#nasjonale-identifikatorserier-for-personer)
+
+#### User
+
+[HPR-nummer](https://simplifier.net/packages/hl7.fhir.no.basis/2.0.16-beta/files/356574)
+
+```json
+{
+   "resourceType": "Practitioner",
+   "id": "52919099-6a7a-442c-b0d5-2b02c0dd4b74",
+   "identifier": [
+      {
+         "system": "2.16.578.1.12.4.1.4.4",
+         "value": "A Norwegian HPR-number"
+      }
+   ],
+   ...
+}
+```
+
+#### Patient
+
+[Fødselsnummer](https://simplifier.net/packages/hl7.fhir.no.basis/2.0.16-beta/files/356544) or [D-nummer](https://simplifier.net/packages/hl7.fhir.no.basis/2.0.16-beta/files/356572)
+
+```json
+{
+   "resourceType": "Patient",
+   "id": "80a75b5a-fd30-4f38-895d-d8098fe7206e",
+   "identifier": [
+      {
+         "system": "2.16.578.1.12.4.1.4.1",
+         "value": "A Norwegian national identifier number"
+      },
+      {
+         "system": "2.16.578.1.12.4.1.4.2",
+         "value": "A Norwegian D-number"
+      }
+   ],
+   ...
+}
+```
 
 ## Prerequisites
 
@@ -86,8 +177,10 @@ Ensure you fill in the following fields.
 
 ## From EHR
 
-If your EHR systems FHIR URL is not in the list of allowed [externalHosts](.nais/dev-gcp.json) you must request it to be added.
-Either create a PR on this repository, or contact the [team responsible for maintaining it](https://github.com/orgs/navikt/teams/helseopplysninger).
+If your EHR systems FHIR URL is not in the list of allowed [externalHosts](.nais/dev-gcp.json) you must request it to be
+added.
+Either create a PR on this repository, or contact
+the [team responsible for maintaining it](https://github.com/orgs/navikt/teams/helseopplysninger).
 
 Set the launch URL of this application to https://nav-on-fhir.ekstern.dev.nav.no/launch and ensure you've registered the
 client-id.
@@ -137,7 +230,8 @@ client-id.
 The scopes used in SMART on FHIR follow a special syntax that allows granularity while following CRUDS operations
 (CREATE, READ, UPDATE, DELETE, SEARCH). This application requests all patient and user scopes using the wildcard `*.*`.
 This can be replaced with `{FHIR resource type}.[c|r|u|d|s]}?param1=value1&param2=value2`. Before implementing
-specific scopes, read ["Scopes for requesting FHIR data"](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhir-resource-scope-syntax)
+specific scopes,
+read ["Scopes for requesting FHIR data"](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#fhir-resource-scope-syntax)
 and get to know the syntax before implementing.
 
 Basic examples:
@@ -166,7 +260,9 @@ _READ and UPDATE access to the selected patient and all its FHIR resources_
 | `patient/Observation.*`  | INVALID SCOPE |
 | `patient/Appointment.*`  | INVALID SCOPE |
 
-_READ access to observations, but only want [fine grained access](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#finer-grained-resource-constraints-using-search-parameters) to laboratory observations_
+_READ access to observations, but only
+want [fine grained access](https://build.fhir.org/ig/HL7/smart-app-launch/scopes-and-launch-context.html#finer-grained-resource-constraints-using-search-parameters)
+to laboratory observations_
 
 | SCOPE                                                                                                       | Results in                |
 |-------------------------------------------------------------------------------------------------------------|---------------------------|
