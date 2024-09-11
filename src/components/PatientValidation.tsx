@@ -24,6 +24,9 @@ export default function PatientValidation({client}: PatientValidationProps) {
 
       const newValidations: Validation[] = [];
 
+      /**
+       * @see https://www.ehelse.no/teknisk-dokumentasjon/oid-identifikatorserier-i-helse-og-omsorgstjenesten#nasjonale-identifikatorserier-for-personer
+       */
       const norwegianNationalIdentifierSystem = fhirPatient.identifier?.find(id => id.system === "urn:oid:2.16.578.1.12.4.1.4.1");
 
       if (!norwegianNationalIdentifierSystem) {

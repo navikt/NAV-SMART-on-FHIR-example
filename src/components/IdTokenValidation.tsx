@@ -47,11 +47,11 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
        * {resourceType}/{resourceId}. However, in some cases the claim
        * can contain the full URL to the resource, for example:
        *
-       * https://fhir.example.com/Practitioner/{practitioner-uuid}
+       * https://fhir.example.com/Practitioner/{practitioner-id}
        *
        * The client library handles this, therefore the url part is
        * ignored. Expected format is therefore
-       * {Practitioner | Patient | RelatedPerson}/{resource-uuid}
+       * {Practitioner | Patient | RelatedPerson}/{resource-id}
        */
       if (!fhirUser) {
         newValidations.push(new Validation(`ID token is missing the "fhirUser" claim`, Severity.ERROR));
@@ -59,7 +59,7 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
         const split = fhirUser.split("/").slice(-2); // Take the last two segments (resourceType/resourceId)
 
         if (split.length !== 2) {
-          newValidations.push(new Validation(`"fhirUser" claim is not properly formatted`, Severity.ERROR));
+          newValidations.push(new Validation(`"fhirUser" claim is not properly formatted, expected {ResourceType}/{ResourceID} but was ${fhirUser}`, Severity.ERROR));
         } else {
           const [resourceType, resourceId] = split;
 
@@ -78,12 +78,12 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
 
       /**
        * profile claim, if present, can be represented in the same way
-       * as the fhirUser claim, or as just the uuid of the resource.
+       * as the fhirUser claim, or as just the ID of the resource.
        */
       if (!profile) {
         newValidations.push(new Validation(`ID token is missing the "profile" claim`, Severity.ERROR));
       } else {
-        const split = profile.split("/").slice(-2); // Take the last two segments of the URL or just the UUID
+        const split = profile.split("/").slice(-2); // Take the last two segments of the URL or just the ID
 
         // Determine the resourceId and resourceType based on how the profile is formatted
         const resourceId = split.length === 2 ? split[1] : split[0];
