@@ -25,26 +25,49 @@ export default function UserValidation({client}: UserValidationProps) {
   useEffect(() => {
     if (!client) return;
 
-    if (client.user.fhirUser && client.user.resourceType === "Practitioner") {
+    function validateUser(fhirPractitioner: Practitioner) {
+      console.debug("✅ Practitioner data fetched");
+      Object.entries(fhirPractitioner).forEach(([key, value]) => {
+        console.debug(`ℹ️ Practitioner.${key}:`, value);
+      });
+
+      const newValidations: Validation[] = [];
+
+      const norwegianHealthcareProfessionalSystem = fhirPractitioner.identifier?.find(id => id.system === "urn:oid:2.16.578.1.12.4.1.4.4");
+
+      if (!norwegianHealthcareProfessionalSystem) {
+        newValidations.push(new Validation(`The Practitioner does not have a norwegian healthcare professional ID number (HPR-number) with URN OID "urn:oid:2.16.578.1.12.4.1.4.4"`, Severity.ERROR));
+      }
+
+      setValidations(newValidations);
+    }
+
+    if (client.user.fhirUser && client.getUserType() === "Practitioner") {
       client.request<Practitioner>(client.user.fhirUser).then(fhirPractitioner => {
-        console.debug("✅ Practitioner data fetched");
-        Object.entries(fhirPractitioner).forEach(([key, value]) => {
-          console.debug(`ℹ️ Practitioner.${key}:`, value);
-        });
-
-        const newValidations: Validation[] = [];
-
-        const norwegianHealthcareProfessionalSystem = fhirPractitioner.identifier?.find(id => id.system === "urn:oid:2.16.578.1.12.4.1.4.4");
-
-        if (!norwegianHealthcareProfessionalSystem) {
-          newValidations.push(new Validation(`The Practitioner does not have a norwegian healthcare professional ID number (HPR-number) with URN OID "urn:oid:2.16.578.1.12.4.1.4.4"`, Severity.ERROR));
-        }
-
-        setValidations(newValidations);
+        validateUser(fhirPractitioner);
       }).catch(err => setError(handleError("Unable to fetch Practitioner", err)));
     } else {
-      setError(`Logged in user is not set or not the correct type "Practitioner". FhirUser claim: ${client.user.fhirUser}. ResourceType: ${client.user.resourceType}`);
+      /**
+       * We expect the user to be a Practitioner, therefore we also validate the "practitioner"
+       * part of the token response if the expected claims are not set in the id_token.
+       * This is only to validate that the practitioner exists even though the SMART
+       * framework has not been implemented properly.
+       *
+       * WARNING! This is not a secure way of fetching the practitioner as it is outside
+       * the scope/claims and not part of a valid JWT. This method of fetching a practitioner
+       * should not be used.
+       */
+      const practitionerId = client.getState("tokenResponse")["practitioner"];
+      if (practitionerId) {
+        client.request<Practitioner>(`Practitioner/${practitionerId}`).then(practitioner => {
+          validateUser(practitioner);
+
+          // No need to set the error as this is not the proper way to fetch the FHIR resource
+          // Log to console and continue.
+        }).catch(err => console.error(handleError(`Unable to fetch FHIR practitioner from tokenResponse["practitioner"]`, err)));
+      }
     }
+    // setError(`Logged-in user is not set or not the correct type "Practitioner". FhirUser claim: ${client.user.fhirUser}. ResourceType: ${client.user.resourceType}`);
   }, [client]);
 
   return (

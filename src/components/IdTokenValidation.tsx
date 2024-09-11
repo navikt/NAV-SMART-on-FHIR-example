@@ -3,7 +3,6 @@ import {Severity, Validation} from "../utils/Validation.ts";
 import {useEffect, useState} from "react";
 import {authOptions} from "../fhir/FhirAuth.ts";
 import ValidationTable from "./ValidationTable.tsx";
-import {isUUIDv4} from "../utils/Matcher.ts";
 
 export interface IdTokenValidationProps {
   readonly client: Client | undefined;
@@ -69,9 +68,9 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
             newValidations.push(new Validation(`"fhirUser" claim MUST contain the resource type Practitioner, Patient, or RelatedPerson, but was ${resourceType}`, Severity.ERROR));
           }
 
-          // Validate the resourceId as a UUID v4
-          if (!isUUIDv4(resourceId)) {
-            newValidations.push(new Validation(`"fhirUser" resource ID must be of type UUID v4 but was ${resourceId}`, Severity.ERROR));
+          // Validate resource ID is present
+          if (resourceId) {
+            newValidations.push(new Validation(`"fhirUser" resource ID must be present`, Severity.ERROR));
           }
         }
       }
@@ -94,8 +93,8 @@ export default function IdTokenValidation({client}: IdTokenValidationProps) {
           newValidations.push(new Validation(`"profile" claim MUST contain the resource type Practitioner, Patient, or RelatedPerson, but was ${resourceType}`, Severity.ERROR));
         }
 
-        if (!isUUIDv4(resourceId)) {
-          newValidations.push(new Validation(`"profile" resource ID must be of type UUID v4 but was ${resourceId}`, Severity.ERROR));
+        if (resourceId) {
+          newValidations.push(new Validation(`"profile" resource ID must be present`, Severity.ERROR));
         }
       }
 
