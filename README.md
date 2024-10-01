@@ -140,8 +140,8 @@ This app only checks that the `system` is valid according to the Norwegian ident
 ## Start
 
 ```
-$ pnpm run build
-$ pnpm run dev
+$ yarn run build
+$ yarn run dev
 ```
 
 ### Debug

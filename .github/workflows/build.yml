@@ -19,20 +19,17 @@ jobs:
       - name: Sjekk ut kode
         uses: actions/checkout@v4
 
-      - name: Sett opp pnpm
-        uses: pnpm/action-setup@v4
-        with:
-          version: 9
-          run_install: false
+      - name: Enable corepack
+        run: corepack enable
 
       - name: Sett opp node
         uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: 'pnpm'
+          cache: 'yarn'
 
       - name: Installer avhengigheter
-        run: pnpm install
+        run: yarn install --immutable
 
       - name: Bygg koden
-        run: pnpm run build
+        run: yarn run build
