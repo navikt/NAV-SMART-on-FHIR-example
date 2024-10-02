@@ -7,6 +7,8 @@ export function useSmartClient() {
   const [client, setClient] = useState<Client | undefined>(undefined);
   const [error, setError] = useState<string | undefined>(undefined);
 
+
+
   useEffect(() => {
     SMART.ready().then((client: Client) => {
       console.debug("✅ The client is initialized and ready to fetch from the FHIR server:", client);

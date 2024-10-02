@@ -1,10 +1,8 @@
-import {useEffect} from "react";
 import {oauth2 as SMART} from "fhirclient";
 import {authOptions} from "../../fhir/FhirAuth.ts";
+import {useQuery} from "@tanstack/react-query";
 
 export default function Launch() {
-  sessionStorage.clear();
-
   /**
    * STEP 1 - FHIR authorization
    *
@@ -15,14 +13,18 @@ export default function Launch() {
    * is provided by the EHR. The `iss` will then be equal to the FHIR server resource used
    * for fetching data from the FHIR API.
    */
-  useEffect(() => {
-    // Ikke gjør noe med promise callback, denne siden skal bare omdirigere.
-    SMART.authorize(authOptions);
-  }, []);
+  const {error, isLoading} = useQuery({
+    queryKey: ["smartAuth"],
+    queryFn: async () => {
+      // Ikke gjør noe med promise callback, denne siden skal bare omdirigere.
+      await SMART.authorize(authOptions);
+    }
+  });
 
   return (
     <div id="launch-container">
-      <p>Starter SMART launch sekvens, denne siden vil omdirigere automatisk.</p>
+      {error && <p>{error.message}</p>}
+      {isLoading ? <p>Loading...</p> : <p>Starter SMART launch sekvens, denne siden vil omdirigere automatisk.</p>}
     </div>
   );
 }
