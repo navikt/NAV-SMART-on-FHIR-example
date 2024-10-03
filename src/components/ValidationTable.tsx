@@ -1,4 +1,5 @@
 import {Severity, Validation} from "../utils/Validation.ts";
+import clsx from "clsx";
 
 export interface ValidationTableProps {
   readonly validationTitle: string;
@@ -29,7 +30,10 @@ export default function ValidationTable({validationTitle, validations}: Validati
           <tbody>
           {sortedValidations.map((validation, index) => (
             <tr key={index} className="border-2 border-neutral-800">
-              <td className={`px-6 py-4 text-${validation.severity === Severity.ERROR ? "red-500" : validation.severity === Severity.WARNING ? "yellow-400" : "blue-200"}`}>
+              <td className={clsx(`px-6 py-4 text-blue-500`, {
+                "text-red-500": validation.severity === Severity.ERROR,
+                "text-yellow-400": validation.severity === Severity.WARNING
+              })}>
                 {validation.severity}
               </td>
               <td className="px-6 py-2 dark:text-neutral-200">{validation.message}</td>
