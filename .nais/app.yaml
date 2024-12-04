@@ -20,7 +20,7 @@ spec:
   {{/each}}
   replicas:
     max: 1
-    min: 1
+    min: 0
   azure:
     application:
       enabled: true
