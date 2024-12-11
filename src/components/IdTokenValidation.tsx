@@ -24,7 +24,6 @@ function validateIdToken(client: Client) {
   const newValidations: Validation[] = [];
 
   if (idToken) {
-    const fhirServerUrl: string = client.getState("serverUrl");
     const fhirUser = idToken["fhirUser"] as string;
     const profile = idToken.profile;
     const issuer = idToken.iss;
@@ -63,7 +62,6 @@ function validateIdToken(client: Client) {
       }
     }
 
-
     /**
      * profile claim, if present, can be represented in the same way
      * as the fhirUser claim, or as just the ID of the resource.
@@ -86,11 +84,7 @@ function validateIdToken(client: Client) {
       }
     }
 
-    if (issuer) {
-      if (issuer !== fhirServerUrl) {
-        newValidations.push(new Validation(`ID token issuer should be the same as the FHIR server URL (${fhirServerUrl}), but was ${idToken.iss}`, Severity.WARNING));
-      }
-    } else {
+    if (!issuer) {
       newValidations.push(new Validation(`ID token is missing the "issuer" claim`, Severity.ERROR));
     }
 

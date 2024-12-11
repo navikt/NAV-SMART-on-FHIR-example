@@ -25,7 +25,7 @@ function App() {
     {isLoading && <p>Initializing SMART client...</p>}
     {client && <div className="flex flex-col">
         <div className="flex gap-4 justify-center">
-            <button className="border rounded bg-blue-900 p-4 py-2" onClick={async () => {
+            <button className="border rounded bg-blue-900 p-4 py-2 text-white" onClick={async () => {
               const webMedPractitionerId = client?.getState("tokenResponse.practitioner");
               const practitioner = await client?.request(`Practitioner/${webMedPractitionerId}`);
               Object.entries(practitioner).forEach(([key, value]) => {
@@ -33,14 +33,14 @@ function App() {
               });
             }}>Fetch WebMed Practitioner
             </button>
-            <button className="border rounded bg-blue-900 p-4 py-2" onClick={async () => {
+            <button className="border rounded bg-blue-900 p-4 py-2 text-white" onClick={async () => {
               const practitioner = await client?.request(`Patient/${client.patient.id}`);
               Object.entries(practitioner).forEach(([key, value]) => {
                 console.debug(`ℹ️ (manual) Practitioner.${key}:`, JSON.stringify(value));
               });
             }}>Fetch Patient
             </button>
-            <button className="border rounded bg-blue-900 p-4 py-2" onClick={async () => {
+            <button className="border rounded bg-blue-900 p-4 py-2 text-white" onClick={async () => {
               const encounter = await client?.request(`Encounter/${client.encounter.id}`);
               Object.entries(encounter).forEach(([key, value]) => {
                 console.debug(`ℹ️ (manual) Encounter.${key}:`, JSON.stringify(value));
