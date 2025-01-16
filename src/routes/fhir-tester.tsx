@@ -26,6 +26,8 @@ function FhirTester(): ReactElement {
 }
 
 function ResourceTester({ client }: { client: Client }) {
+  useGlobalClient(client)
+
   const [resource, setResource] = useState<string | null>(null)
   const { isPending, data, error, mutate } = useMutation({
     mutationKey: ['resource', resource],
@@ -46,12 +48,6 @@ function ResourceTester({ client }: { client: Client }) {
     },
   })
 
-  useEffect(() => {
-    // Put the FHIR client on the window object for debugging
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ;(window as any).fhirClient = client
-  }, [client])
-
   return (
     <div>
       <form
@@ -63,7 +59,7 @@ function ResourceTester({ client }: { client: Client }) {
         className="flex gap-3"
       >
         <input
-          className="dark:bg-gray-800 dark:text-white p-2 grow"
+          className="dark:bg-gray-800 bg-gray-100 dark:text-white p-2 grow"
           type="text"
           placeholder="Resource ID"
           value={resource ?? ''}
@@ -105,13 +101,45 @@ function ResourceTester({ client }: { client: Client }) {
       {isPending && <div>Fetching {resource}...</div>}
       {data && (
         <div className="mt-8">
-          <h3>Successfully fetched {resource}</h3>
-          <pre>{JSON.stringify(data, null, 2)}</pre>
+          <div className="mb-2 flex justify-between">
+            <h3>Successfully fetched {resource}</h3>
+            <button
+              className="underline"
+              onClick={() => {
+                const element = document.getElementById('resource-json')
+                if (element == null) return
+
+                const selection = window.getSelection()
+                if (selection == null) return
+
+                const range = document.createRange()
+                range.selectNodeContents(element)
+                selection.removeAllRanges()
+                selection.addRange(range)
+              }}
+            >
+              Mark all
+            </button>
+          </div>
+          <pre id="resource-json" className="p-2 border overflow-auto">
+            {JSON.stringify(data, null, 2)}
+          </pre>
         </div>
       )}
       {data == null && <div className="mt-8">No resource fetched yet</div>}
     </div>
   )
+}
+
+function useGlobalClient(client: Client): void {
+  useEffect(() => {
+    // Put the FHIR client on the window object for debugging
+    const global = window as unknown as { smart: Client }
+
+    global.smart = client
+
+    console.debug("ℹ Set 'smart' on window object for debugging")
+  }, [client])
 }
 
 export default FhirTester
