@@ -6,6 +6,7 @@ import PatientValidation from "../components/PatientValidation.tsx";
 import EncounterValidation from "../components/EncounterValidation.tsx";
 import {useQuery} from "@tanstack/react-query";
 import {oauth2 as SMART} from "fhirclient";
+import {Link} from "react-router-dom";
 
 function App() {
   const {data: client, error, isLoading} = useQuery({
@@ -60,6 +61,9 @@ function App() {
         <EncounterValidation client={client}/>
     </div>}
     {error && <ErrorPage error={error.message}/>}
+    <div className="mt-8">
+      <Link className="underline" to="/fhir-tester" >Go to FHIR Resource Tester</Link>
+    </div>
   </div>;
 }
 
