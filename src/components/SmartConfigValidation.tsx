@@ -1,92 +1,92 @@
-import Client from "fhirclient/lib/Client";
-import {Severity, Validation} from "../utils/Validation.ts";
-import {SmartConfiguration} from "../smart/SmartConfiguration.ts";
-import ValidationTable from "./ValidationTable.tsx";
-import {useQuery} from "@tanstack/react-query";
+import Client from 'fhirclient/lib/Client'
+import { Severity, Validation } from '../utils/Validation.ts'
+import { SmartConfiguration } from '../smart/SmartConfiguration.ts'
+import ValidationTable from './ValidationTable.tsx'
+import { useQuery } from '@tanstack/react-query'
 
 export interface SmartConfigValidationProps {
-  readonly client: Client;
+  readonly client: Client
 }
 
 function getWellKnownUrl(client: Client) {
-  const fhirServerUrl: string = client.getState("serverUrl");
-  console.debug("ℹ️ FHIR server URL:", fhirServerUrl);
+  const fhirServerUrl: string = client.getState('serverUrl')
+  console.debug('ℹ️ FHIR server URL:', fhirServerUrl)
 
-  const urlHasSlashSuffix = fhirServerUrl.endsWith("/");
-  let wellKnownSmartConfigURL: string;
+  const urlHasSlashSuffix = fhirServerUrl.endsWith('/')
+  let wellKnownSmartConfigURL: string
 
   if (urlHasSlashSuffix) {
-    wellKnownSmartConfigURL = `${fhirServerUrl}.well-known/smart-configuration`;
+    wellKnownSmartConfigURL = `${fhirServerUrl}.well-known/smart-configuration`
   } else {
-    wellKnownSmartConfigURL = `${fhirServerUrl}/.well-known/smart-configuration`;
+    wellKnownSmartConfigURL = `${fhirServerUrl}/.well-known/smart-configuration`
   }
-  console.debug("ℹ️ SMART configuration URL:", wellKnownSmartConfigURL);
-  return wellKnownSmartConfigURL;
+  console.debug('ℹ️ SMART configuration URL:', wellKnownSmartConfigURL)
+  return wellKnownSmartConfigURL
 }
 
 function validateWellKnown(config: SmartConfiguration) {
-  console.debug("ℹ️ .well-known/smart-configuration:", config);
+  console.debug('ℹ️ .well-known/smart-configuration:', config)
 
-  const newValidations: Validation[] = [];
+  const newValidations: Validation[] = []
 
   // REQUIRED fields
   if (!config.issuer) {
-    newValidations.push(new Validation(`issuer is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`issuer is REQUIRED`, Severity.ERROR))
   }
   if (!config.jwks_uri) {
-    newValidations.push(new Validation(`field jwks_uri is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`field jwks_uri is REQUIRED`, Severity.ERROR))
   }
   if (!config.authorization_endpoint) {
-    newValidations.push(new Validation(`authorization_endpoint is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`authorization_endpoint is REQUIRED`, Severity.ERROR))
   }
   if (!config.grant_types_supported) {
-    newValidations.push(new Validation(`grant_types_supported is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`grant_types_supported is REQUIRED`, Severity.ERROR))
   }
   if (!config.token_endpoint) {
-    newValidations.push(new Validation(`token_endpoint is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`token_endpoint is REQUIRED`, Severity.ERROR))
   }
   if (!config.capabilities) {
-    newValidations.push(new Validation(`capabilities is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`capabilities is REQUIRED`, Severity.ERROR))
   }
   if (!config.code_challenge_methods_supported) {
-    newValidations.push(new Validation(`code_challenge_methods_supported is REQUIRED`, Severity.ERROR));
+    newValidations.push(new Validation(`code_challenge_methods_supported is REQUIRED`, Severity.ERROR))
   }
 
   // RECOMMENDED fields
   if (!config.user_access_brand_bundle) {
-    newValidations.push(new Validation(`user_access_brand_bundle is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`user_access_brand_bundle is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.user_access_brand_identifier) {
-    newValidations.push(new Validation(`user_access_brand_identifier is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`user_access_brand_identifier is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.scopes_supported) {
-    newValidations.push(new Validation(`scopes_supported is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`scopes_supported is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.response_types_supported) {
-    newValidations.push(new Validation(`response_types_supported is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`response_types_supported is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.management_endpoint) {
-    newValidations.push(new Validation(`management_endpoint is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`management_endpoint is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.introspection_endpoint) {
-    newValidations.push(new Validation(`introspection_endpoint is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`introspection_endpoint is RECOMMENDED`, Severity.WARNING))
   }
   if (!config.revocation_endpoint) {
-    newValidations.push(new Validation(`revocation_endpoint is RECOMMENDED`, Severity.WARNING));
+    newValidations.push(new Validation(`revocation_endpoint is RECOMMENDED`, Severity.WARNING))
   }
 
   // OPTIONAL fields
   if (!config.token_endpoint_auth_methods_supported) {
-    newValidations.push(new Validation(`token_endpoint_auth_methods_supported not found`, Severity.INFO));
+    newValidations.push(new Validation(`token_endpoint_auth_methods_supported not found`, Severity.INFO))
   }
   if (!config.registration_endpoint) {
-    newValidations.push(new Validation(`registration_endpoint not found`, Severity.INFO));
+    newValidations.push(new Validation(`registration_endpoint not found`, Severity.INFO))
   }
   if (!config.associated_endpoints) {
-    newValidations.push(new Validation(`associated_endpoints not found`, Severity.INFO));
+    newValidations.push(new Validation(`associated_endpoints not found`, Severity.INFO))
   }
 
-  return newValidations;
+  return newValidations
 }
 
 /**
@@ -97,34 +97,33 @@ function validateWellKnown(config: SmartConfiguration) {
  *
  * @param client - The SMART on FHIR client instance
  */
-export default function SmartConfigValidation({client}: SmartConfigValidationProps) {
-  const {data, error, isLoading} = useQuery({
-    queryKey: ["wellKnown"],
+export default function SmartConfigValidation({ client }: SmartConfigValidationProps) {
+  const { data, error, isLoading } = useQuery({
+    queryKey: ['wellKnown'],
     queryFn: async () => {
-      const wellKnownSmartConfigURL = getWellKnownUrl(client);
+      const wellKnownSmartConfigURL = getWellKnownUrl(client)
 
-      const result = await fetch(wellKnownSmartConfigURL);
+      const result = await fetch(wellKnownSmartConfigURL)
 
       if (!result.ok) {
-        throw new Error(`Unable to fetch well-known/smart-configuration. ${result.status} ${result.statusText}`);
+        throw new Error(`Unable to fetch well-known/smart-configuration. ${result.status} ${result.statusText}`)
       }
 
-      const data: SmartConfiguration = await result.json();
-      return validateWellKnown(data);
-    }
-  });
+      const data: SmartConfiguration = await result.json()
+      return validateWellKnown(data)
+    },
+  })
 
   return (
     <div className="basis-1/5">
       {isLoading && <p>Validating well-known/smart-configuration</p>}
-      {data && <ValidationTable validationTitle={"SMART configuration validation"}
-                                validations={data}/>}
-      {error &&
-          <div>
-              <h4>An error occurred while fetching .well-known/smart-configuration</h4>
-              <p>{error.message}</p>
-          </div>
-      }
+      {data && <ValidationTable validationTitle={'SMART configuration validation'} validations={data} />}
+      {error && (
+        <div>
+          <h4>An error occurred while fetching .well-known/smart-configuration</h4>
+          <p>{error.message}</p>
+        </div>
+      )}
     </div>
-  );
+  )
 }
