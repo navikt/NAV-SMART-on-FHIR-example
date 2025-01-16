@@ -6,7 +6,7 @@ import {Patient} from "fhir/r4";
 import {handleError} from "../utils/ErrorHandler.ts";
 
 export interface PatientValidationProps {
-  readonly client: Client | undefined;
+  readonly client: Client;
 }
 
 export default function PatientValidation({client}: PatientValidationProps) {

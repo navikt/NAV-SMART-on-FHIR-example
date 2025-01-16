@@ -6,7 +6,7 @@ import {Practitioner} from "fhir/r4";
 import {handleError} from "../utils/ErrorHandler.ts";
 
 export interface UserValidationProps {
-  readonly client: Client | undefined;
+  readonly client: Client;
 }
 
 /**
