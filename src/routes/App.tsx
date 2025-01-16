@@ -24,7 +24,7 @@ function App() {
     <p className="text-3xl text-center pb-5">NAV SMART on FHIR compliance test</p>
     {isLoading && <p>Initializing SMART client...</p>}
     {client && <div className="flex flex-col">
-        <div className="flex gap-4 justify-center">
+        <div className="flex gap-4 justify-center mb-5">
             <button className="border rounded bg-blue-900 p-4 py-2 text-white" onClick={async () => {
               const webMedPractitionerId = client?.getState("tokenResponse.practitioner");
               const practitioner = await client?.request(`Practitioner/${webMedPractitionerId}`);

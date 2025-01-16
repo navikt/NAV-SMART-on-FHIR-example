@@ -18,7 +18,7 @@ export default function ValidationTable({validationTitle, validations}: Validati
   const sortedValidations = [...validations].sort((a, b) => severityRank[b.severity] - severityRank[a.severity]);
 
   return (
-    <div>
+    <div className="my-3">
       {validations.length > 0 ?
         <table className="text-left w-full border-2 border-collapse">
           <thead className="text-neutral-200 uppercase bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200">
@@ -42,7 +42,7 @@ export default function ValidationTable({validationTitle, validations}: Validati
           </tbody>
         </table>
         :
-        <h4>✅ No issues to report for {validationTitle}</h4>
+        <h4 className="ml-5">✅ No issues to report for {validationTitle}</h4>
       }
     </div>
   );

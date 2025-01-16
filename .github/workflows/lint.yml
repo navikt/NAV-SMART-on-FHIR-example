@@ -28,4 +28,7 @@ jobs:
         run: yarn install --immutable
 
       - name: Kjør lint
-        run: yarn run lint
+        run: yarn lint
+
+      - name: Sjekk typer
+        run: yarn tsc
