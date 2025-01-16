@@ -98,13 +98,13 @@ function ResourceTester({ client }: { client: Client }) {
           Unable to fetch {resource}: {error.message}
         </div>
       )}
-      {isPending && <div>Fetching {resource}...</div>}
+      {isPending && <div className="mt-8">Fetching {resource}...</div>}
       {data && (
         <div className="mt-8">
           <div className="mb-2 flex justify-between">
-            <h3>Successfully fetched {resource}</h3>
+            <h3 className="break-all">Successfully fetched {resource}</h3>
             <button
-              className="underline"
+              className="underline shrink-0 px-2 ml-4 hover:bg-gray-500"
               onClick={() => {
                 const element = document.getElementById('resource-json')
                 if (element == null) return
