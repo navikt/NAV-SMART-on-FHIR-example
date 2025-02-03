@@ -7,6 +7,7 @@ import App from './routes/App.tsx'
 import Launch from './routes/launch/Launch.tsx'
 import FhirTester from './routes/fhir-tester.tsx'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import FhirCreateTester from './routes/fhir-create-tester.tsx'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,10 @@ const router = createBrowserRouter([
   {
     path: '/fhir-tester',
     element: <FhirTester />,
+  },
+  {
+    path: '/fhir-creator',
+    element: <FhirCreateTester />,
   },
 ])
 

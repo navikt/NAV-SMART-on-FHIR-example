@@ -80,9 +80,12 @@ function App() {
         </div>
       )}
       {error && <ErrorPage error={error.message} />}
-      <div className="my-8">
+      <div className="flex flex-col gap-3 my-8">
         <Link className="underline" to="/fhir-tester">
           Go to FHIR Resource Tester
+        </Link>
+        <Link className="underline" to="/fhir-creator">
+          Go to FHIR Creation Centre
         </Link>
       </div>
     </div>
