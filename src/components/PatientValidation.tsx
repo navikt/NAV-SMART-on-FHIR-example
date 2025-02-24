@@ -44,6 +44,16 @@ export default function PatientValidation({ client }: PatientValidationProps) {
 function validatePatient(fhirPatient: Patient): Validation[] {
   const newValidations: Validation[] = []
 
+  const meta = fhirPatient.meta
+
+  if (!meta) {
+    newValidations.push(new Validation('Patient object does not contain a meta reference', Severity.ERROR))
+  } else if (!meta.profile) {
+    newValidations.push(new Validation('The Patient Meta object does not contain a profile reference', Severity.ERROR))
+  } else if (!meta.profile.includes('http://hl7.no/fhir/StructureDefinition/no-basis-Patient')) {
+    newValidations.push(new Validation('The Patient must be of type no-basis-Patient', Severity.ERROR))
+  }
+
   /**
    * @see https://www.ehelse.no/teknisk-dokumentasjon/oid-identifikatorserier-i-helse-og-omsorgstjenesten#nasjonale-identifikatorserier-for-personer
    */
@@ -68,6 +78,19 @@ function validatePatient(fhirPatient: Patient): Validation[] {
           Severity.ERROR,
         ),
       )
+    }
+  }
+
+  const patientNames = fhirPatient.name
+  if (!patientNames || patientNames.length === 0) {
+    newValidations.push(new Validation(`The Patient does not have a name property`, Severity.ERROR))
+  } else {
+    const humanName = patientNames[0]
+    if (!humanName.family) {
+      newValidations.push(new Validation('The Patient does not have a family name', Severity.ERROR))
+    }
+    if (!humanName.given || humanName.given.length === 0) {
+      newValidations.push(new Validation('The Patient does not have given name(s)', Severity.ERROR))
     }
   }
 
