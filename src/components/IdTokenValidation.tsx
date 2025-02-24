@@ -25,7 +25,6 @@ function validateIdToken(client: Client) {
 
   if (idToken) {
     const fhirUser = idToken['fhirUser'] as string
-    const profile = idToken.profile
     const issuer = idToken.iss
     const audience = idToken.aud
 
@@ -75,38 +74,6 @@ function validateIdToken(client: Client) {
         if (!resourceId.trim()) {
           newValidations.push(new Validation(`"fhirUser" resource ID must be present`, Severity.ERROR))
         }
-      }
-    }
-
-    /**
-     * profile claim, if present, can be represented in the same way
-     * as the fhirUser claim, or as just the ID of the resource.
-     */
-    if (!profile) {
-      newValidations.push(new Validation(`ID token is missing the "profile" claim`, Severity.ERROR))
-    } else {
-      const split = profile.split('/').slice(-2) // Take the last two segments of the URL or just the ID
-
-      // Determine the resourceId and resourceType based on how the profile is formatted
-      const resourceId = split.length === 2 ? split[1] : split[0]
-      const resourceType = split.length === 2 ? split[0] : null
-
-      if (
-        resourceType &&
-        ![allowedResourceTypes.Practitioner, allowedResourceTypes.Patient, allowedResourceTypes.RelatedPerson].includes(
-          resourceType,
-        )
-      ) {
-        newValidations.push(
-          new Validation(
-            `"profile" claim MUST contain the resource type Practitioner, Patient, or RelatedPerson, but was ${resourceType}`,
-            Severity.ERROR,
-          ),
-        )
-      }
-
-      if (!resourceId.trim()) {
-        newValidations.push(new Validation(`"profile" resource ID must be present`, Severity.ERROR))
       }
     }
 
