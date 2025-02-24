@@ -66,8 +66,10 @@ function validateEncounter(encounter: Encounter): Validation[] {
         newValidations.push(new Validation('Subject object does not contain a subject', Severity.ERROR))
     } else if (!encounter.subject.reference) {
         newValidations.push(new Validation('reference subject reference is not set', Severity.ERROR))
-    } else if (!encounter.subject.reference.includes('Patient')) {
-        newValidations.push(new Validation('Subject reference is not of type Patient', Severity.ERROR))
+    } else if(!encounter.subject.type) {
+        newValidations.push(new Validation('Subject object does not contain a type', Severity.ERROR))
+    } else if (!encounter.subject.type.includes('Patient')) {
+        newValidations.push(new Validation(`Subject reference is not of type Patient, but was "${encounter.subject.type}"`, Severity.ERROR))
     }
 
 
