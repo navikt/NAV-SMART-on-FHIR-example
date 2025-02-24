@@ -1,12 +1,12 @@
 import ErrorPage from './ErrorPage.tsx'
 import SmartConfigValidation from '../components/SmartConfigValidation.tsx'
 import IdTokenValidation from '../components/IdTokenValidation.tsx'
-import UserValidation from '../components/UserValidation.tsx'
 import PatientValidation from '../components/PatientValidation.tsx'
 import EncounterValidation from '../components/EncounterValidation.tsx'
 import { useQuery } from '@tanstack/react-query'
 import { oauth2 as SMART } from 'fhirclient'
 import { Link } from 'react-router-dom'
+import PractitionerValidation from "../components/PractitionerValidation.tsx";
 
 function App() {
   const {
@@ -72,9 +72,9 @@ function App() {
           <br />
           <IdTokenValidation client={client} />
           <br />
-          <UserValidation client={client} />
-          <br />
           <PatientValidation client={client} />
+          <br />
+          <PractitionerValidation client={client} />
           <br />
           <EncounterValidation client={client} />
         </div>

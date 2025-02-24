@@ -68,13 +68,13 @@ function validatePatient(fhirPatient: Patient): Validation[] {
     if (!norwegianDNumberSystem) {
       newValidations.push(
         new Validation(
-          `The Patient does not have a Norwegian national identity number (FNR) from OID "urn:oid:${personalIdentifierSystem}"`,
+          `The Patient does not have a Norwegian national identity number (FNR) from OID "${personalIdentifierSystem}"`,
           Severity.ERROR,
         ),
       )
       newValidations.push(
         new Validation(
-          `The Patient does not have a Norwegian D-number from OID "urn:oid:${dNumberSystem}"`,
+          `The Patient does not have a Norwegian D-number from OID "${dNumberSystem}"`,
           Severity.ERROR,
         ),
       )
