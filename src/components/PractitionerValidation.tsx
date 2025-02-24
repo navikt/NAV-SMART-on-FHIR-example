@@ -13,18 +13,18 @@ export default function PractitionerValidation({client}: PractitionerValidationP
     const {error, data, isLoading} = useQuery({
         queryKey: ['encounterValidation', client.user.fhirUser],
         queryFn: async () => {
-            if (client.user.fhirUser && client.getUserType() === 'Practitioner') {
-                const practitioner = await client.request<Practitioner>(client.user.fhirUser)
-                console.debug('✅ Practitioner data fetched')
-                Object.entries(practitioner).forEach(([key, value]) => {
-                    console.debug(`ℹ️ Practitioner.${key}:`, value)
-                })
-                return practitioner
-            } else {
-                throw new Error(
-                    `Logged-in user is not set or not the correct type "Practitioner". FhirUser claim: ${client.user.fhirUser}. ResourceType: ${client.user.resourceType}`,
-                )
+            if (client.user.fhirUser == null) {
+                throw new Error('ID-token missing the fhirUser claim. ')
             }
+            if (client.getUserType() !== 'Practitioner') {
+                throw new Error(`ID-token fhirUser must be Practitioner, but was "${client.getUserType()}" `)
+            }
+            const practitioner = await client.request<Practitioner>(client.user.fhirUser)
+            console.debug('✅ Practitioner data fetched')
+            Object.entries(practitioner).forEach(([key, value]) => {
+                console.debug(`ℹ️ Practitioner.${key}:`, value)
+            })
+            return practitioner
         },
     })
 
@@ -34,10 +34,9 @@ export default function PractitionerValidation({client}: PractitionerValidationP
         <div className="basis-1/5">
             {isLoading && <p>Loading Practitioner data...</p>}
             {error ? (
-                <div>
-                    <h4>An error occurred when fetching Practitioner information.</h4>
-                    <p>{handleError('Unable to fetch Practitioner', error)}</p>
-                </div>
+                <ValidationTable validationTitle={'Practitioner validation'} validations={
+                    [new Validation(handleError('Unable to fetch Practitioner', error), Severity.ERROR)]
+                }/>
             ) : (
                 <ValidationTable validationTitle={'Practitioner validation'} validations={validations}/>
             )}

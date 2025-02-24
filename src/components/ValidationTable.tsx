@@ -21,9 +21,9 @@ export default function ValidationTable({ validationTitle, validations }: Valida
     <div className="my-3">
       {validations.length > 0 ? (
         <table className="text-left w-full border-2 border-collapse">
-          <thead className="text-neutral-200 uppercase bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200">
+          <thead className="text-neutral-800 uppercase bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200">
             <tr className="border-2 border-neutral-800">
-              <th className="px-6 py-2">Severity</th>
+              <th className="px-6 py-2 w-36">Severity</th>
               <th className="px-6 py-2">{validationTitle} results</th>
             </tr>
           </thead>
@@ -31,7 +31,7 @@ export default function ValidationTable({ validationTitle, validations }: Valida
             {sortedValidations.map((validation, index) => (
               <tr key={index} className="border-2 border-neutral-800">
                 <td
-                  className={clsx(`px-6 py-4 text-blue-500`, {
+                  className={clsx(`px-6 py-4 w-36 text-blue-500`, {
                     'text-red-500': validation.severity === Severity.ERROR,
                     'text-yellow-400': validation.severity === Severity.WARNING,
                   })}
