@@ -30,10 +30,9 @@ export default function EncounterValidation({client}: EncounterValidationProps) 
         <div className="basis-1/5">
             {isLoading && <p>Loading Encounter data...</p>}
             {error ? (
-                <div>
-                    <h4>An error occurred when fetching Encounter information.</h4>
-                    <p>{handleError('Unable to fetch Encounter', error)}</p>
-                </div>
+                <ValidationTable validationTitle={'Encounter validation'} validations={
+                    [new Validation(handleError('Unable to fetch Encounter', error), Severity.ERROR)]
+                }/>
             ) : (
                 <ValidationTable validationTitle={'Encounter validation'} validations={validations}/>
             )}
