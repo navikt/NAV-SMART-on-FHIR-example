@@ -8,6 +8,7 @@ import {oauth2 as SMART} from 'fhirclient'
 import {Link} from 'react-router-dom'
 import PractitionerValidation from "../components/PractitionerValidation.tsx";
 import ConditionValidation from "../components/ConditionValidation.tsx";
+import DocumentReferenceValidation from "../components/DocumentReferenceValidation.tsx";
 
 function App() {
     const {
@@ -80,6 +81,8 @@ function App() {
                     <EncounterValidation client={client}/>
                     <br/>
                     <ConditionValidation client={client}/>
+                    <br/>
+                    <DocumentReferenceValidation client={client}/>
                 </div>
             )}
             {error && <ErrorPage error={error.message}/>}

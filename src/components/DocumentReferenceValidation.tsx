@@ -60,8 +60,14 @@ function validateDocumentReference(documentReference: DocumentReference): Valida
         newValidations.push(new Validation('DocumentReference type object does not contain a coding object', Severity.ERROR))
     } else {
         documentReference.type.coding.forEach(coding => {
-            if (!coding.display)
+            if (!coding.display) {
                 newValidations.push(new Validation('DocumentReference type coding object does not contain a display object', Severity.ERROR))
+            }
+            if (!coding.system || !coding.code) {
+                newValidations.push(new Validation(`DocumentReference type coding object does not contain a system or code object. System was: ${coding.system} and code was: ${coding.code}`, Severity.ERROR))
+            } else if (coding.system !== 'urn:oid:2.16.578.1.12.4.1.1.9602' || coding.code !== 'J01-2') {
+                newValidations.push(new Validation(`DocumentReference type coding system must be "urn:oid:2.16.578.1.12.4.1.1.9602" and code must be ""J01-2", but was "${coding.system}" and "${coding.code}"`, Severity.ERROR))
+            }
         })
     }
 
