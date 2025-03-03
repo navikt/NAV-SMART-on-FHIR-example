@@ -58,7 +58,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
             });
 
             console.log("Response from create DocumentReference:", response);
-            if (!response.ok) {
+            if (!response.id) {
                 throw new Error(`Failed to create DocumentReference: ${response.statusText}`);
             }
             console.log("We have a response and we go past the error check - cool!")
