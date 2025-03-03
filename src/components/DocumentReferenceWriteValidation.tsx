@@ -185,11 +185,13 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 //                 },
 //             },
 //         ],
-//         context: [
-//             {
-//                 encounter: `Encounter/${client.encounter.id}`,
-//             }
-//         ]
+//             context: {
+//                 encounter: [
+//                     {
+//                         reference: `Encounter/${client.encounter.id}`,
+//                     },
+//                 ],
+//             },
 //     };
 // }
 

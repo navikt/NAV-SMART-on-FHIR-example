@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom'
 import PractitionerValidation from "../components/PractitionerValidation.tsx";
 import ConditionValidation from "../components/ConditionValidation.tsx";
 import DocumentReferenceValidation from "../components/DocumentReferenceValidation.tsx";
+import DocumentReferenceWriteValidation from "../components/DocumentReferenceWriteValidation.tsx";
 
 function App() {
     const {
@@ -83,6 +84,8 @@ function App() {
                     <ConditionValidation client={client}/>
                     <br/>
                     <DocumentReferenceValidation client={client}/>
+                    <br/>
+                    <DocumentReferenceWriteValidation client={client}/>
                 </div>
             )}
             {error && <ErrorPage error={error.message}/>}
