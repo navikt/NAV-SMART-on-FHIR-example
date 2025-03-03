@@ -4,7 +4,6 @@ import {DocumentReference} from "fhir/r4";
 import {Severity, Validation} from "../utils/Validation.ts";
 import ValidationTable from "./ValidationTable.tsx";
 import {handleError} from "../utils/ErrorHandler.ts";
-import {useState} from "react";
 import {validateDocumentReference} from "./validateDocRef.ts";
 
 export interface DocumentReferenceWriteValidationProps {
@@ -63,14 +62,10 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 
             return response.id; // This will return the created DocumentReference
         },
-        onSuccess: () => {
-            setDocRefMutationCalled(true)
-        }
+        // onSuccess: () => {
+        //     setDocRefMutationCalled(true)
+        // }
     });
-
-// the rule of hooks.
-    // dependent queries (skiptoken) sjekk docs.
-    // sjekk om den er completa.. ellers.
 
     // user need to click button to start the mutation
     // then we use the createdDocumentReferenceId to fetch the DocumentReference - doesnt exist before mutation is done and we have the id
@@ -98,9 +93,8 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
     // todo knapp her ein plass for å starte write validation
     // <UploadBinary mutate={mutateBinary}/>
 
-    // not using binary upload yet.. simple execute on b64 encoded string
-    const [docRefMutationCalled, setDocRefMutationCalled] = useState(false)
-    if (!docRefMutationCalled) {
+    // not using binary upload, using a b64 encoded string
+    if (!createdDocumentReferenceId) {
         return (
             <div className="flex flex-col">
                 <div className="flex gap-4 justify-center mb-5">
@@ -113,8 +107,9 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
                     </button>
                 </div>
             </div>
-        )
+        );
     }
+
     if (createdDocumentReferenceUploadError) {
         return (
             <div className="basis-1/5">
@@ -124,6 +119,8 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
             </div>
         )
     }
+
+
 
 
     if (isLoading) {
