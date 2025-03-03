@@ -46,7 +46,6 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
         mutate: mutateDocumentReference,
         isPending: createdDocumentReferenceIsPending,
         error: createdDocumentReferenceUploadError,
-        data: createdDocumentReferenceId
     } = useMutation({
         mutationFn: async (documentReference: DocumentReference) => {
             const response = await client.create({
@@ -74,9 +73,11 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 
     // Fetch the DocumentReference after it has been created
     const {error, data, isLoading} = useQuery({
-        queryKey: ['documentReferenceValidation', 'myCoolDocumentReferenceKey'],
+        queryKey: ['documentReferenceValidation', docRefId],
         queryFn: async () => {
-            const documentReferences = await client.request<DocumentReference>(`DocumentReference/${createdDocumentReferenceId}`)
+            if(!docRefId) return
+
+            const documentReferences = await client.request<DocumentReference>(`DocumentReference/${docRefId}`)
 
             console.debug('✅ DocumentReference data fetched')
             Object.entries(documentReferences).forEach(([key, value]) => {
@@ -85,9 +86,11 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 
             return documentReferences
         },
+        enabled: !!docRefId,
     })
 
-    const validations: Validation[] = data ? validateDocumentReference(data) : [] // TODO reuse the validation from DocumentReferenceValidation
+    const validations: Validation[] = data ? validateDocumentReference(data) : []
+
     // if mutation ikkje kalla, return knappen, etterpå evt disable knappen etc.
 //if alt bra, return something, if shit, feilmelding ,else success. forenkler return metoden nederst ved å splitte opp i fleire returns.
 
