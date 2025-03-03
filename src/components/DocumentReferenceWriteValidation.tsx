@@ -48,6 +48,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
         error: createdDocumentReferenceUploadError,
     } = useMutation({
         mutationFn: async (documentReference: DocumentReference) => {
+            console.log("Mutation function triggered with:", documentReference);
             const response = await client.create({
                 resourceType: "DocumentReference",
                 body: JSON.stringify(documentReference),
@@ -60,11 +61,12 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
                 throw new Error(`Failed to create DocumentReference: ${response.statusText}`);
             }
 
-            return response.id; // This will return the created DocumentReference
+            console.log("Inside mutation...DocumentReference created with ID:", response.id);
+            return response; // This will return the created DocumentReference
         },
-        onSuccess: (id) => {
-            console.debug("✅ DocumentReference created with ID:", id);
-            setDocRefId(id); // Store the ID in state
+        onSuccess: (response) => {
+            console.log("✅ DocumentReference created with ID:", response.id);
+            setDocRefId(response.id); // Store the ID in state
         },
     });
 
@@ -77,6 +79,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
         queryFn: async () => {
             if(!docRefId) return
 
+            console.debug('DocumentReference ID:', docRefId)
             const documentReferences = await client.request<DocumentReference>(`DocumentReference/${docRefId}`)
 
             console.debug('✅ DocumentReference data fetched')
@@ -105,7 +108,10 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
                 <div className="flex gap-4 justify-center mb-5">
                     <button
                         className="border rounded bg-blue-900 p-4 py-2 text-white"
-                        onClick={() => mutateDocumentReference(documentReferenceWithB64Data)}
+                        onClick={() => {
+                            console.log('Button clicked, mutation starting...')
+                            mutateDocumentReference(documentReferenceWithB64Data)}
+                        }
                         disabled={createdDocumentReferenceIsPending}
                     >
                         {createdDocumentReferenceIsPending ? "Uploading..." : "Upload DocumentReference (b64)"}
