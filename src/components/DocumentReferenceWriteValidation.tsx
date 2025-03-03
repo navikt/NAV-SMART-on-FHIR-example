@@ -5,6 +5,7 @@ import {Severity, Validation} from "../utils/Validation.ts";
 import ValidationTable from "./ValidationTable.tsx";
 import {handleError} from "../utils/ErrorHandler.ts";
 import {validateDocumentReference} from "./validateDocRef.ts";
+import {useState} from "react";
 
 export interface DocumentReferenceWriteValidationProps {
     readonly client: Client
@@ -40,7 +41,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 
     // optionally, create DocumentReference with base64 data
     const documentReferenceWithB64Data = getDocRefWithB64Data(client)
-
+    const [docRefId, setDocRefId] = useState<string | undefined>(undefined);
     const {
         mutate: mutateDocumentReference,
         isPending: createdDocumentReferenceIsPending,
@@ -62,9 +63,10 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
 
             return response.id; // This will return the created DocumentReference
         },
-        // onSuccess: () => {
-        //     setDocRefMutationCalled(true)
-        // }
+        onSuccess: (id) => {
+            console.debug("✅ DocumentReference created with ID:", id);
+            setDocRefId(id); // Store the ID in state
+        },
     });
 
     // user need to click button to start the mutation
@@ -94,7 +96,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
     // <UploadBinary mutate={mutateBinary}/>
 
     // not using binary upload, using a b64 encoded string
-    if (!createdDocumentReferenceId) {
+    if (!docRefId) {
         return (
             <div className="flex flex-col">
                 <div className="flex gap-4 justify-center mb-5">
