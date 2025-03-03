@@ -46,7 +46,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
         mutate: mutateDocumentReference,
         isPending: createdDocumentReferenceIsPending,
         error: createdDocumentReferenceUploadError,
-    } = useMutation({
+        isSuccess: isSuccessDocRef} = useMutation({
         mutationFn: async (documentReference: DocumentReference) => {
             console.log("Mutation function triggered with:", documentReference);
             const response = await client.create({
@@ -57,16 +57,17 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
                 },
             });
 
+            console.log("Response from create DocumentReference:", response);
             if (!response.ok) {
                 throw new Error(`Failed to create DocumentReference: ${response.statusText}`);
             }
-
+            console.log("We have a response and we go past the error check - cool!")
             console.log("Inside mutation...DocumentReference created with ID:", response.id);
-            return response; // This will return the created DocumentReference
+            return response;
         },
         onSuccess: (response) => {
             console.log("✅ DocumentReference created with ID:", response.id);
-            setDocRefId(response.id); // Store the ID in state
+            setDocRefId(response.id);
         },
     });
 
@@ -95,11 +96,6 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
     const validations: Validation[] = data ? validateDocumentReference(data) : []
 
     // if mutation ikkje kalla, return knappen, etterpå evt disable knappen etc.
-//if alt bra, return something, if shit, feilmelding ,else success. forenkler return metoden nederst ved å splitte opp i fleire returns.
-
-
-    // todo knapp her ein plass for å starte write validation
-    // <UploadBinary mutate={mutateBinary}/>
 
     // not using binary upload, using a b64 encoded string
     if (!docRefId) {
@@ -112,7 +108,7 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
                             console.log('Button clicked, mutation starting...')
                             mutateDocumentReference(documentReferenceWithB64Data)}
                         }
-                        disabled={createdDocumentReferenceIsPending}
+                        disabled={createdDocumentReferenceIsPending || isSuccessDocRef}
                     >
                         {createdDocumentReferenceIsPending ? "Uploading..." : "Upload DocumentReference (b64)"}
                     </button>
