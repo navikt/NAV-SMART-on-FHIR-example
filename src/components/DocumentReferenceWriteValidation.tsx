@@ -102,21 +102,17 @@ export default function DocumentReferenceWriteValidation({client}: DocumentRefer
     const [docRefMutationCalled, setDocRefMutationCalled] = useState(false)
     if (!docRefMutationCalled) {
         return (
-            <button
-                onClick={() => mutateDocumentReference(documentReferenceWithB64Data)}
-                disabled={createdDocumentReferenceIsPending}
-                style={{
-                    padding: "10px 15px",
-                    fontSize: "16px",
-                    backgroundColor: createdDocumentReferenceIsPending ? "#ccc" : "#007bff",
-                    color: "white",
-                    border: "none",
-                    borderRadius: "5px",
-                    cursor: createdDocumentReferenceIsPending ? "not-allowed" : "pointer",
-                }}
-            >
-                {createdDocumentReferenceIsPending ? "Uploading..." : "Upload DocumentReference"}
-            </button>
+            <div className="flex flex-col">
+                <div className="flex gap-4 justify-center mb-5">
+                    <button
+                        className="border rounded bg-blue-900 p-4 py-2 text-white"
+                        onClick={() => mutateDocumentReference(documentReferenceWithB64Data)}
+                        disabled={createdDocumentReferenceIsPending}
+                    >
+                        {createdDocumentReferenceIsPending ? "Uploading..." : "Upload DocumentReference (b64)"}
+                    </button>
+                </div>
+            </div>
         )
     }
     if (createdDocumentReferenceUploadError) {
