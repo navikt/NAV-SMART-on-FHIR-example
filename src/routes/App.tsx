@@ -9,7 +9,8 @@ import {Link} from 'react-router-dom'
 import PractitionerValidation from "../components/PractitionerValidation.tsx";
 import ConditionValidation from "../components/ConditionValidation.tsx";
 import DocumentReferenceValidation from "../components/DocumentReferenceValidation.tsx";
-import DocumentReferenceWriteValidation from "../components/DocumentReferenceWriteValidation.tsx";
+import BinaryUploadWritableDocumentReference from "../components/BinaryUploadWritableDocumentReference.tsx";
+import B64WritableDocumentReference from "../components/B64WritableDocumentReference.tsx";
 
 function App() {
     const {
@@ -85,7 +86,9 @@ function App() {
                     <br/>
                     <DocumentReferenceValidation client={client}/>
                     <br/>
-                    <DocumentReferenceWriteValidation client={client}/>
+                    <BinaryUploadWritableDocumentReference client={client}/>
+                    <br/>
+                    <B64WritableDocumentReference client={client}/>
                 </div>
             )}
             {error && <ErrorPage error={error.message}/>}
