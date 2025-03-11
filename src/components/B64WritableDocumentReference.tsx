@@ -24,7 +24,6 @@ export default function B64WritableDocumentReference({client}: B64WritableDocume
         isSuccess: isSuccessDocRef
     } = useMutation({
         mutationFn: async (documentReference: DocumentReference) => {
-            console.log("Mutation function triggered with:", documentReference);
             const response = await client.create({
                 resourceType: "DocumentReference",
                 body: JSON.stringify(documentReference),

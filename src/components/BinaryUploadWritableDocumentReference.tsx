@@ -43,7 +43,6 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
 
             });
 
-            console.log("Response from create DocumentReference:", docRefCreationResponse);
             if (!docRefCreationResponse.id) {
                 console.log("Failed to create DocumentReference:", docRefCreationResponse);
                 throw new Error(`Failed to create DocumentReference: ${docRefCreationResponse.statusText}`);
@@ -52,7 +51,7 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
             return docRefCreationResponse;
         },
         onSuccess(response) {
-            console.log("✅ Binary uploaded with ID:", response.id);
+            console.log("✅ Binary uploaded and documentReference created with ID:", response.id);
             setDocRefId(response.id);
         }
     });
