@@ -1,20 +1,21 @@
 import Client from "fhirclient/lib/Client";
 import {DocumentReference} from "fhir/r4";
 import {useMutation} from "@tanstack/react-query";
-import DocumentReferenceWriteValidation from "./DocumentReferenceWriteValidation.tsx";
 import ValidationTable from "./ValidationTable.tsx";
 import {Severity, Validation} from "../utils/Validation.ts";
 import {handleError} from "../utils/ErrorHandler.ts";
 import {pdf} from "../mocks/base64pdf.ts";
+import {validateDocumentReference} from "./validateDocRef.ts";
 import {useState} from "react";
+import {useDocumentReferenceQuery} from "./useDocumentReferenceQuery.ts";
 
 export interface BinaryUploadWritableDocumentReferenceProps {
     readonly client: Client
 }
 
 export default function BinaryUploadWritableDocumentReference({client}: BinaryUploadWritableDocumentReferenceProps) {
-    const [binaryFileReferenceId, setBinaryFileReferenceId] = useState<string | undefined>(undefined);
-
+    const [docRefId, setDocRefId] = useState<string | undefined>(undefined);
+    const validationTitle = 'Writable (binary) DocumentReference validation'
     const {
         mutate,
         isPending,
@@ -23,23 +24,56 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
         isSuccess,
     } = useMutation({
         mutationFn: async ({file}: { file: File }) => {
-            const response = await client.create({
+            const binaryCreationResponse = await client.create({
                 resourceType: "Binary",
                 contentType: file.type,
                 data: file,
             });
-
-            if (!response.ok) {
-                throw new Error(`Failed to upload binary: ${response.statusText}`);
+            if (!binaryCreationResponse.id) {
+                console.log("Failed to create Binary, ", binaryCreationResponse);
+                throw new Error(`Failed to create Binary: ${binaryCreationResponse.statusText}`);
             }
 
-            return response;
+            const docRefCreationResponse = await client.create({
+                resourceType: "DocumentReference",
+                body: JSON.stringify(getDocRefWithBinary(client, binaryCreationResponse.id)),
+                headers: {
+                    "Content-Type": "application/fhir+json",
+                },
+
+            });
+
+            console.log("Response from create DocumentReference:", docRefCreationResponse);
+            if (!docRefCreationResponse.id) {
+                console.log("Failed to create DocumentReference:", docRefCreationResponse);
+                throw new Error(`Failed to create DocumentReference: ${docRefCreationResponse.statusText}`);
+            }
+
+            return docRefCreationResponse;
         },
         onSuccess(response) {
             console.log("✅ Binary uploaded with ID:", response.id);
-            setBinaryFileReferenceId(response.id)
+            setDocRefId(response.id);
         }
     });
+
+    const {
+        error: fetchedDocRefError,
+        data: fetchedDocRefData,
+        isLoading: fetchedDocRefIsLoading
+    } = useDocumentReferenceQuery(client, docRefId)
+
+    if (isPending) {
+        return <p>Uploading binary file and creating DocumentReference...</p>
+    }
+
+    if (error) {
+        return (
+            <ValidationTable validationTitle={validationTitle} validations={
+                [new Validation(handleError('Error while creating new DocumentReference with a binary file reference', error), Severity.ERROR)]
+            }/>
+        )
+    }
 
     if (!data) {
         return (
@@ -49,7 +83,6 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
                         <button
                             className="border rounded bg-blue-900 p-4 py-2 text-white"
                             onClick={() => {
-                                console.log('Button clicked, mutation starting...')
                                 mutate({file: base64ToFile(pdf, 'sykmelding.pdf')})}
                             }
                             disabled={isPending || isSuccess}
@@ -62,42 +95,51 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
         );
     }
 
-    if (isPending) {
-        console.log("hello we are uploading binary stuffs and isPending")
-        return <p>Uploading binary file and creating DocumentReference...</p>
-    }
-
-    if (error) {
+    if (!data.id) {
         return (
-            <ValidationTable validationTitle={'Writable DocumentReference validation'} validations={
-                [new Validation(handleError('Error while creating new DocumentReference with a binary file reference', error), Severity.ERROR)]
-            }/>
-        )
-    }
-
-    if(!binaryFileReferenceId) {
-        return (
-            <ValidationTable validationTitle={'Writable DocumentReference validation'} validations={
+            <ValidationTable validationTitle={validationTitle} validations={
                 [new Validation(handleError('Error while creating new DocumentReference with a binary file reference, the binary id appears to be missing', error), Severity.ERROR)]
             }/>
         )
     }
 
-    const documentReferenceBinary = getDocRefWithBinary(client, binaryFileReferenceId);
-
-
-    return (
-        <div className="flex flex-col">
-            <div className="flex gap-4 justify-center mb-5">
+    if (!fetchedDocRefData) {
+        return (
+            <div className="basis-1/5">
+                <p>Loading DocumentReference data...</p>
+            </div>
+        )
+    }
+    if (fetchedDocRefIsLoading) {
+        return (
+            <div className="basis-1/5">
+                <p>Loading DocumentReference data...</p>
+            </div>
+        )
+    } else if (fetchedDocRefError) {
+        return (
+            <div className="basis-1/5">
+                <ValidationTable validationTitle={validationTitle} validations={
+                    [new Validation(handleError('Unable to fetch Writable DocumentReference', error), Severity.ERROR)]
+                }/>
+            </div>
+        )
+    } else {
+        const validations: Validation[] = data ? validateDocumentReference(fetchedDocRefData) : []
+        return (
+            <div className="basis-1/5">
                 <div>
-                    <DocumentReferenceWriteValidation client={client} documentReference={documentReferenceBinary}/>
+                    <ValidationTable validationTitle={validationTitle}
+                                     validations={validations}/>
                 </div>
             </div>
-        </div>
-    );
+        );
+
+    }
+
 }
 
-function getDocRefWithBinary(client: Client, id: string ): DocumentReference {
+function getDocRefWithBinary(client: Client, id: string): DocumentReference {
     return {
         resourceType: "DocumentReference",
         status: "current",
@@ -152,6 +194,6 @@ function base64ToFile(base64String: string, fileName: string): File {
 
     const byteArray = new Uint8Array(byteNumbers);
 
-    const blob = new Blob([byteArray], { type: "application/pdf" });
-    return new File([blob], fileName, { type: "application/pdf" });
+    const blob = new Blob([byteArray], {type: "application/pdf"});
+    return new File([blob], fileName, {type: "application/pdf"});
 }
