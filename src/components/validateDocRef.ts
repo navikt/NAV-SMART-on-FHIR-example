@@ -57,14 +57,18 @@ export function validateDocumentReference(documentReference: DocumentReference):
             if (!content.attachment) {
                 newValidations.push(new Validation('DocumentReference content object does not contain an attachment object', Severity.ERROR))
             } else {
-                if (!content.attachment.contentType) {
-                    newValidations.push(new Validation('DocumentReference content attachment object does not contain a contentType object, should be "application/pdf"', Severity.ERROR))
-                }
                 if (!content.attachment.title) {
                     newValidations.push(new Validation('DocumentReference content attachment object does not contain a title', Severity.ERROR))
                 }
-                if (!content.attachment.data) {
-                    newValidations.push(new Validation('DocumentReference content attachment object does not contain data, should be "base64 PDF"', Severity.ERROR))
+                if (!content.attachment.data && !content.attachment.url) {
+                    newValidations.push(new Validation(`DocumentReference content attachment object does not contain a "data" or "url" object. DocumentReference must either have a b64-encoded PDF in the data field, or a reference to a Binary on the FHIR-server in the url field, i.e: "Binary/<reference>"`, Severity.ERROR))
+                } else if (content.attachment.url) {
+                    newValidations.push(new Validation('DocumentReference content attachment object contains "url" with a reference to a binary file on the FHIR-server - all good"', Severity.INFO))
+                }
+                if (!content.attachment.contentType) {
+                    newValidations.push(new Validation('DocumentReference content attachment object does not contain the contentType object, should be "application/pdf. This is required when sending b64 encoded files in the "data" object. "', Severity.ERROR))
+                } else if (content.attachment.data && content.attachment.contentType === 'application/pdf') {
+                    newValidations.push(new Validation('DocumentReference content attachment object contains "data" with b64 encoded PDF - all good"', Severity.INFO))
                 }
                 if (!content.attachment.language) {
                     newValidations.push(new Validation('DocumentReference content attachment object does not contain a language object', Severity.ERROR))
