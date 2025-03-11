@@ -1,18 +1,20 @@
 import Client from "fhirclient/lib/Client";
 import {DocumentReference} from "fhir/r4";
-import {fhirclient} from "fhirclient/lib/types";
 import {useMutation} from "@tanstack/react-query";
 import DocumentReferenceWriteValidation from "./DocumentReferenceWriteValidation.tsx";
 import ValidationTable from "./ValidationTable.tsx";
 import {Severity, Validation} from "../utils/Validation.ts";
 import {handleError} from "../utils/ErrorHandler.ts";
 import {pdf} from "../mocks/base64pdf.ts";
+import {useState} from "react";
 
 export interface BinaryUploadWritableDocumentReferenceProps {
     readonly client: Client
 }
 
 export default function BinaryUploadWritableDocumentReference({client}: BinaryUploadWritableDocumentReferenceProps) {
+    const [binaryFileReferenceId, setBinaryFileReferenceId] = useState<string | undefined>(undefined);
+
     const {
         mutate,
         isPending,
@@ -33,6 +35,10 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
 
             return response;
         },
+        onSuccess(response) {
+            console.log("✅ Binary uploaded with ID:", response.id);
+            setBinaryFileReferenceId(response.id)
+        }
     });
 
     if (!data) {
@@ -57,18 +63,28 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
     }
 
     if (isPending) {
+        console.log("hello we are uploading binary stuffs and isPending")
         return <p>Uploading binary file and creating DocumentReference...</p>
     }
 
     if (error) {
         return (
             <ValidationTable validationTitle={'Writable DocumentReference validation'} validations={
-                [new Validation(handleError('Error while creating new DocumentReference based on b64 encoded data', error), Severity.ERROR)]
+                [new Validation(handleError('Error while creating new DocumentReference with a binary file reference', error), Severity.ERROR)]
             }/>
         )
     }
 
-    const documentReferenceBinary = getDocRefWithBinary(client, data)
+    if(!binaryFileReferenceId) {
+        return (
+            <ValidationTable validationTitle={'Writable DocumentReference validation'} validations={
+                [new Validation(handleError('Error while creating new DocumentReference with a binary file reference, the binary id appears to be missing', error), Severity.ERROR)]
+            }/>
+        )
+    }
+
+    const documentReferenceBinary = getDocRefWithBinary(client, binaryFileReferenceId);
+
 
     return (
         <div className="flex flex-col">
@@ -81,7 +97,7 @@ export default function BinaryUploadWritableDocumentReference({client}: BinaryUp
     );
 }
 
-function getDocRefWithBinary(client: Client, binaryData: undefined | fhirclient.CombinedFetchResult<fhirclient.FHIR.Resource> | fhirclient.FHIR.Resource): DocumentReference {
+function getDocRefWithBinary(client: Client, id: string ): DocumentReference {
     return {
         resourceType: "DocumentReference",
         status: "current",
@@ -109,7 +125,7 @@ function getDocRefWithBinary(client: Client, binaryData: undefined | fhirclient.
                 attachment: {
                     title: "My cool sykmelding document",
                     language: "NO-nb",
-                    url: `Binary/${binaryData}`, // Using a binary reference to a file. Prereq is that the binary resource is created already.
+                    url: `Binary/${id}`, // Using a binary reference to a file. Prereq is that the binary resource is created already.
                 },
             },
         ],
