@@ -98,7 +98,7 @@ function validatePractitioner(practitioner: Practitioner): Validation[] {
     } else {
         practitionerTelecom.forEach((telecom, index) => {
             if (!telecom.system || !['phone', 'fax', 'email', 'pager', 'url', 'sms', 'other'].includes(telecom.system)) {
-                newValidations.push(new Validation(`The Practitioner content [${index}] does not have a telecom system: ${telecom.system ?? 'undefined'} `, Severity.WARNING))
+                newValidations.push(new Validation(`The Practitioner content [${index}] does not have a telecom system: ${telecom.system ?? 'undefined'} `, Severity.ERROR))
             }
             if (!telecom.value) {
                 newValidations.push(new Validation(`The Practitioner content [${index}] does not have a telecom value`, Severity.ERROR))

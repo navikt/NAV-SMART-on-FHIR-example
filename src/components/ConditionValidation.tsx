@@ -80,7 +80,7 @@ function validateCondition(condition: Condition): Validation[] {
                 newValidations.push(new Validation('The Condition coding object does not contain a code', Severity.ERROR))
             }
             if (!coding.display) {
-                newValidations.push(new Validation('The Condition coding object does not contain a display name', Severity.ERROR))
+                newValidations.push(new Validation('The Condition coding object does not contain a display name', Severity.WARNING))
             }
         })
     }
