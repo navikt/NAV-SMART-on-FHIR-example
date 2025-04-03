@@ -1,7 +1,7 @@
 import Client from 'fhirclient/lib/Client'
 import { Severity, Validation } from '../utils/Validation.ts'
 import { authOptions } from '../fhir/FhirAuth.ts'
-import ValidationTable from './ValidationTable.tsx'
+import ValidationTable from './validation-table/ValidationTable.tsx'
 
 export interface IdTokenValidationProps {
   readonly client: Client

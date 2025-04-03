@@ -1,5 +1,5 @@
-import { Severity, Validation } from '../utils/Validation.ts'
-import clsx from 'clsx'
+import { Severity, Validation } from '../../utils/Validation.ts'
+import Pill from './Pill.tsx'
 
 export interface ValidationTableProps {
   readonly validationTitle: string
@@ -20,23 +20,20 @@ export default function ValidationTable({ validationTitle, validations }: Valida
   return (
     <div className="my-3">
       {validations.length > 0 ? (
-        <table className="text-left w-full border-2 border-collapse">
-          <thead className="text-neutral-800 uppercase bg-neutral-200">
-            <tr className="border-2 border-neutral-800">
-              <th className="px-6 py-2 w-36">Severity</th>
+        <table className="text-left w-full border-collapse table-auto">
+          <thead className="uppercase bg-neutral-600 text-white">
+            <tr className="border-2 border-white rounded">
+              <th className="px-6 py-2 w-36 border-r-2 border-white">Severity</th>
               <th className="px-6 py-2">{validationTitle} results</th>
             </tr>
           </thead>
           <tbody>
             {sortedValidations.map((validation, index) => (
-              <tr key={index} className="border-2 border-neutral-800">
-                <td
-                  className={clsx(`px-6 py-4 w-36 text-blue-500`, {
-                    'text-red-500': validation.severity === Severity.ERROR,
-                    'text-yellow-400': validation.severity === Severity.WARNING,
-                  })}
-                >
-                  {validation.severity}
+              <tr key={index} className="border-2 border-white even:bg-gray-100 odd:bg-gray-300 h-full align-top">
+                <td className="px-6 py-2 w-36 border-r-2 border-white align-middle">
+                  <div className="flex items-center justify-center h-full">
+                    <Pill severity={validation.severity} />
+                  </div>
                 </td>
                 <td className="px-6 py-2">{validation.message}</td>
               </tr>

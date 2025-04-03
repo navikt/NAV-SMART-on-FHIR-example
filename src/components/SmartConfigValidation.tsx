@@ -1,7 +1,7 @@
 import Client from 'fhirclient/lib/Client'
 import { Severity, Validation } from '../utils/Validation.ts'
 import { SmartConfiguration } from '../smart/SmartConfiguration.ts'
-import ValidationTable from './ValidationTable.tsx'
+import ValidationTable from './validation-table/ValidationTable.tsx'
 import { useQuery } from '@tanstack/react-query'
 
 export interface SmartConfigValidationProps {

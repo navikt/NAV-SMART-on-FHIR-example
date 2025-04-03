@@ -1,6 +1,6 @@
 import Client from 'fhirclient/lib/Client'
 import { Severity, Validation } from '../utils/Validation.ts'
-import ValidationTable from './ValidationTable.tsx'
+import ValidationTable from './validation-table/ValidationTable.tsx'
 import { Encounter } from 'fhir/r4'
 import { handleError } from '../utils/ErrorHandler.ts'
 import { useQuery } from '@tanstack/react-query'

@@ -3,7 +3,7 @@ import { Practitioner } from 'fhir/r4'
 import { useQuery } from '@tanstack/react-query'
 import { Severity, Validation } from '../utils/Validation.ts'
 import { handleError } from '../utils/ErrorHandler.ts'
-import ValidationTable from './ValidationTable.tsx'
+import ValidationTable from './validation-table/ValidationTable.tsx'
 
 export interface PractitionerValidationProps {
   readonly client: Client
