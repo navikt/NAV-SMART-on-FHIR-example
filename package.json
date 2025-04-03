@@ -17,8 +17,8 @@
     "@tanstack/react-query-devtools": "^5.71.5",
     "clsx": "^2.1.1",
     "fhirclient": "^2.5.5",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
     "react-router-dom": "^6.30.0"
   },
   "devDependencies": {
@@ -26,8 +26,8 @@
     "@tanstack/eslint-plugin-query": "^5.71.5",
     "@types/fhir": "^0.0.41",
     "@types/node": "^22.14.0",
-    "@types/react": "^18.3.20",
-    "@types/react-dom": "^18.3.6",
+    "@types/react": "^19.1.0",
+    "@types/react-dom": "^19.1.1",
     "@types/react-router-dom": "^5.3.3",
     "@typescript-eslint/eslint-plugin": "^8.29.0",
     "@typescript-eslint/parser": "^8.29.0",
