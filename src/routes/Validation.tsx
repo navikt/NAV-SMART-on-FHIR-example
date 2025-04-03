@@ -3,7 +3,6 @@ import SmartConfigValidation from '../components/SmartConfigValidation.tsx'
 import IdTokenValidation from '../components/IdTokenValidation.tsx'
 import PatientValidation from '../components/PatientValidation.tsx'
 import EncounterValidation from '../components/EncounterValidation.tsx'
-import { Link } from 'react-router-dom'
 import PractitionerValidation from '../components/PractitionerValidation.tsx'
 import ConditionValidation from '../components/ConditionValidation.tsx'
 import DocumentReferenceValidation from '../components/DocumentReferenceValidation.tsx'
@@ -19,30 +18,37 @@ function Validation() {
   return (
     <Page sidebar={<RefetchSidebar />}>
       <div className="mt-4">
-        <p className="text-3xl ml-8 pb-5">Nav SMART on FHIR validation</p>
+        <div className="ml-8 mb-4 pb-5">
+          <h1 className="text-4xl ">Nav SMART on FHIR validation</h1>
+          <p className="text-sm">
+            Collection of resource fetches and writes to verify if a FHIR server is compliant with the FHIR
+            specification
+          </p>
+        </div>
         {smart.isLoading && <p>Initializing SMART client...</p>}
-        {smart.client && (
-          <div className="flex flex-col">
-            <br />
-            <SmartConfigValidation client={smart.client} />
-            <br />
-            <IdTokenValidation client={smart.client} />
-            <br />
-            <PatientValidation client={smart.client} />
-            <br />
-            <PractitionerValidation client={smart.client} />
-            <br />
-            <EncounterValidation client={smart.client} />
-            <br />
-            <ConditionValidation client={smart.client} />
-            <br />
-            <DocumentReferenceValidation client={smart.client} />
-            <br />
-            <BinaryUploadWritableDocumentReference client={smart.client} />
-            <br />
-            <B64WritableDocumentReference client={smart.client} />
-          </div>
-        )}
+        <div>
+          <h2 className="ml-8 font-bold text-2xl">General FHIR Resource Validation</h2>
+          {smart.client && (
+            <div className="flex flex-col gap-3">
+              <SmartConfigValidation client={smart.client} />
+              <IdTokenValidation client={smart.client} />
+              <PatientValidation client={smart.client} />
+              <PractitionerValidation client={smart.client} />
+              <EncounterValidation client={smart.client} />
+            </div>
+          )}
+        </div>
+        <div className="mt-8">
+          <h2 className="ml-8 font-bold text-2xl">{`"Ny sykmelding" Resource Validation`}</h2>
+          {smart.client && (
+            <div className="flex flex-col gap-3">
+              <ConditionValidation client={smart.client} />
+              <DocumentReferenceValidation client={smart.client} />
+              <BinaryUploadWritableDocumentReference client={smart.client} />
+              <B64WritableDocumentReference client={smart.client} />
+            </div>
+          )}
+        </div>
         {smart.error && <ErrorPage error={smart.error.message} />}
       </div>
     </Page>
