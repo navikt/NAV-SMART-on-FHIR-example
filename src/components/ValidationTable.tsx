@@ -21,7 +21,7 @@ export default function ValidationTable({ validationTitle, validations }: Valida
     <div className="my-3">
       {validations.length > 0 ? (
         <table className="text-left w-full border-2 border-collapse">
-          <thead className="text-neutral-800 uppercase bg-neutral-200 dark:bg-neutral-800 dark:text-neutral-200">
+          <thead className="text-neutral-800 uppercase bg-neutral-200">
             <tr className="border-2 border-neutral-800">
               <th className="px-6 py-2 w-36">Severity</th>
               <th className="px-6 py-2">{validationTitle} results</th>
@@ -38,7 +38,7 @@ export default function ValidationTable({ validationTitle, validations }: Valida
                 >
                   {validation.severity}
                 </td>
-                <td className="px-6 py-2 dark:text-neutral-200">{validation.message}</td>
+                <td className="px-6 py-2">{validation.message}</td>
               </tr>
             ))}
           </tbody>

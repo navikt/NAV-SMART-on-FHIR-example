@@ -59,7 +59,7 @@ function ResourceTester({ client }: { client: Client }) {
         className="flex gap-3"
       >
         <input
-          className="dark:bg-gray-800 bg-gray-100 dark:text-white p-2 grow"
+          className="bg-gray-100 p-2 grow"
           type="text"
           placeholder="Resource ID"
           value={resource ?? ''}

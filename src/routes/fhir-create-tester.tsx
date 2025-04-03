@@ -65,7 +65,7 @@ function ResourceTester({ client }: { client: Client }) {
           </button>
         </div>
         <textarea
-          className="dark:bg-gray-800 bg-gray-100 dark:text-white p-2 grow"
+          className="bg-gray-100 p-2 grow"
           placeholder="FHIR resource JSON"
           rows={25}
           value={resource ?? ''}
