@@ -35,11 +35,10 @@ export default function ConditionValidation({ client }: ConditionValidationProps
       {isLoading && <p>Loading Condition data...</p>}
       {error ? (
         <ValidationTable
-          validationTitle={'Condition validation'}
           validations={[new Validation(handleError('Unable to fetch Condition', error), Severity.ERROR)]}
         />
       ) : (
-        <ValidationTable validationTitle={'Condition validation'} validations={validations} />
+        <ValidationTable validations={validations} />
       )}
     </div>
   )

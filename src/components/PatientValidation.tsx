@@ -31,11 +31,10 @@ export default function PatientValidation({ client }: PatientValidationProps) {
       {isLoading && <p>Loading Patient data...</p>}
       {error ? (
         <ValidationTable
-          validationTitle={'Patient validation'}
           validations={[new Validation(handleError('Unable to fetch Patient', error), Severity.ERROR)]}
         />
       ) : (
-        <ValidationTable validationTitle={'Patient validation'} validations={validations} />
+        <ValidationTable validations={validations} />
       )}
     </div>
   )

@@ -11,6 +11,7 @@ import B64WritableDocumentReference from '../components/B64WritableDocumentRefer
 import Page from '../components/layout/Page.tsx'
 import { useSmart } from '../smart/use-smart.ts'
 import RefetchSidebar from '../components/main-validation/RefetchSidebar.tsx'
+import ValidationSection from '../components/validation-table/ValidationSection.tsx'
 
 function Validation() {
   const smart = useSmart()
@@ -30,11 +31,21 @@ function Validation() {
           <h2 className="ml-8 font-bold text-2xl">General FHIR Resource Validation</h2>
           {smart.client && (
             <div className="flex flex-col gap-3">
-              <SmartConfigValidation client={smart.client} />
-              <IdTokenValidation client={smart.client} />
-              <PatientValidation client={smart.client} />
-              <PractitionerValidation client={smart.client} />
-              <EncounterValidation client={smart.client} />
+              <ValidationSection title="SMART configuration validation">
+                <SmartConfigValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection title="ID token validation">
+                <IdTokenValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection title="Patient validation">
+                <PatientValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection title="Practitioner validation">
+                <PractitionerValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection title="Encounter validation">
+                <EncounterValidation client={smart.client} />
+              </ValidationSection>
             </div>
           )}
         </div>
@@ -42,10 +53,24 @@ function Validation() {
           <h2 className="ml-8 font-bold text-2xl">{`"Ny sykmelding" Resource Validation`}</h2>
           {smart.client && (
             <div className="flex flex-col gap-3">
-              <ConditionValidation client={smart.client} />
-              <DocumentReferenceValidation client={smart.client} />
-              <BinaryUploadWritableDocumentReference client={smart.client} />
-              <B64WritableDocumentReference client={smart.client} />
+              <ValidationSection title="Condition validation">
+                <ConditionValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection title="DocumentReference validation">
+                <DocumentReferenceValidation client={smart.client} />
+              </ValidationSection>
+              <ValidationSection
+                title="Writable (binary) DocumentReference validation"
+                description="Uploads a Binary then creates a DocumentReference to said Binary, shows the result of the mutations"
+              >
+                <BinaryUploadWritableDocumentReference client={smart.client} />
+              </ValidationSection>
+              <ValidationSection
+                title="Writable (b64) DocumentReference validation"
+                description="Uploads a DocumentReference directly with a b64 encoded payload, then shows the result of the mutation."
+              >
+                <B64WritableDocumentReference client={smart.client} />
+              </ValidationSection>
             </div>
           )}
         </div>

@@ -34,11 +34,10 @@ export default function DocumentReferenceValidation({ client }: DocumentReferenc
       {isLoading && <p>Loading DocumentReference data...</p>}
       {error ? (
         <ValidationTable
-          validationTitle={'DocumentReference validation'}
           validations={[new Validation(handleError('Unable to fetch DocumentReference', error), Severity.ERROR)]}
         />
       ) : (
-        <ValidationTable validationTitle={'DocumentReference validation'} validations={validations} />
+        <ValidationTable validations={validations} />
       )}
     </div>
   )

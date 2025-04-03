@@ -15,7 +15,6 @@ export interface BinaryUploadWritableDocumentReferenceProps {
 
 export default function BinaryUploadWritableDocumentReference({ client }: BinaryUploadWritableDocumentReferenceProps) {
   const [docRefId, setDocRefId] = useState<string | undefined>(undefined)
-  const validationTitle = 'Writable (binary) DocumentReference validation'
   const { mutate, isPending, error, data, isSuccess } = useMutation({
     mutationFn: async ({ file }: { file: File }) => {
       const binaryCreationResponse = await client.create({
@@ -62,7 +61,6 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
   if (error) {
     return (
       <ValidationTable
-        validationTitle={validationTitle}
         validations={[
           new Validation(
             handleError('Error while creating new DocumentReference with a binary file reference', error),
@@ -76,10 +74,10 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
   if (!data) {
     return (
       <div className="flex flex-col">
-        <div className="flex gap-4 justify-center mb-5">
+        <div className="flex gap-4 mb-5">
           <div>
             <button
-              className="border rounded-sm bg-blue-900 p-4 py-2 text-white"
+              className="border border-blue-900 rounded-sm bg-blue-300 p-4 py-2 text-gray-900 cursor-pointer"
               onClick={() => {
                 mutate({ file: base64ToFile(pdf, 'sykmelding.pdf') })
               }}
@@ -96,7 +94,6 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
   if (!data.id) {
     return (
       <ValidationTable
-        validationTitle={validationTitle}
         validations={[
           new Validation(
             handleError(
@@ -127,7 +124,6 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
     return (
       <div className="basis-1/5">
         <ValidationTable
-          validationTitle={validationTitle}
           validations={[
             new Validation(handleError('Unable to fetch Writable DocumentReference', error), Severity.ERROR),
           ]}
@@ -139,7 +135,7 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
     return (
       <div className="basis-1/5">
         <div>
-          <ValidationTable validationTitle={validationTitle} validations={validations} />
+          <ValidationTable validations={validations} />
         </div>
       </div>
     )

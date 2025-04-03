@@ -35,11 +35,10 @@ export default function PractitionerValidation({ client }: PractitionerValidatio
       {isLoading && <p>Loading Practitioner data...</p>}
       {error ? (
         <ValidationTable
-          validationTitle={'Practitioner validation'}
           validations={[new Validation(handleError('Unable to fetch Practitioner', error), Severity.ERROR)]}
         />
       ) : (
-        <ValidationTable validationTitle={'Practitioner validation'} validations={validations} />
+        <ValidationTable validations={validations} />
       )}
     </div>
   )

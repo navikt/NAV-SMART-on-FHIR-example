@@ -15,7 +15,7 @@ export interface B64WritableDocumentReferenceProps {
 
 export default function B64WritableDocumentReference({ client }: B64WritableDocumentReferenceProps) {
   const [docRefId, setDocRefId] = useState<string | undefined>(undefined)
-  const validationTitle = 'Writable (b64) DocumentReference validation'
+
   const {
     mutate: mutateDocumentReference,
     isPending: createdDocumentReferenceIsPending,
@@ -50,9 +50,9 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
     const documentReference = getDocRefWithB64Data(client)
     return (
       <div className="flex flex-col">
-        <div className="flex gap-4 justify-center mb-5">
+        <div className="flex gap-4 mb-5">
           <button
-            className="border rounded-sm bg-blue-900 p-4 py-2 text-white"
+            className="border border-blue-900 rounded-sm bg-blue-300 p-4 py-2 text-gray-900 cursor-pointer"
             onClick={() => {
               mutateDocumentReference(documentReference)
             }}
@@ -69,7 +69,6 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
     return (
       <div className="basis-1/5">
         <ValidationTable
-          validationTitle={validationTitle}
           validations={[
             new Validation(
               handleError('Error while creating new DocumentReference based on b64 encoded data', error),
@@ -91,7 +90,6 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
     return (
       <div className="basis-1/5">
         <ValidationTable
-          validationTitle={validationTitle}
           validations={[
             new Validation(handleError('Unable to fetch Writable DocumentReference', error), Severity.ERROR),
           ]}
@@ -102,7 +100,7 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
     return (
       <div className="basis-1/5">
         <div>
-          <ValidationTable validationTitle={validationTitle} validations={validations} />
+          <ValidationTable validations={validations} />
         </div>
       </div>
     )

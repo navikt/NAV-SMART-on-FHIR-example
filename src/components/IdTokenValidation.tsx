@@ -111,7 +111,7 @@ export default function IdTokenValidation({ client }: IdTokenValidationProps) {
 
   return (
     <div className="basis-1/5">
-      <ValidationTable validationTitle={'ID token validation'} validations={validations} />
+      <ValidationTable validations={validations} />
     </div>
   )
 }

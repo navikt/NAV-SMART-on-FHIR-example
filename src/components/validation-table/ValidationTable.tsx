@@ -8,18 +8,16 @@ const severityRank = {
 }
 
 export interface ValidationTableProps {
-  readonly validationTitle: string
   readonly validations: Validation[] | undefined
 }
 
-export default function ValidationTable({ validationTitle, validations }: ValidationTableProps) {
+export default function ValidationTable({ validations }: ValidationTableProps) {
   if (!validations) return
 
   const sortedValidations = [...validations].sort((a, b) => severityRank[b.severity] - severityRank[a.severity])
 
   return (
-    <div className="my-3">
-      <h3 className="ml-4 mb-2 font-bold">{validationTitle}</h3>
+    <div>
       {validations.length > 0 ? (
         <table className="text-left w-full border-collapse table-auto">
           <thead className="uppercase bg-neutral-600 text-white">
@@ -42,7 +40,7 @@ export default function ValidationTable({ validationTitle, validations }: Valida
           </tbody>
         </table>
       ) : (
-        <h4 className="ml-5">✅ No issues to report for {validationTitle}</h4>
+        <h4 className="ml-5">✅ No issues to report</h4>
       )}
     </div>
   )

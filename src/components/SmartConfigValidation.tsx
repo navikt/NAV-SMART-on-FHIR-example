@@ -117,7 +117,7 @@ export default function SmartConfigValidation({ client }: SmartConfigValidationP
   return (
     <div className="basis-1/5">
       {isLoading && <p>Validating well-known/smart-configuration</p>}
-      {data && <ValidationTable validationTitle={'SMART configuration validation'} validations={data} />}
+      {data && <ValidationTable validations={data} />}
       {error && (
         <div>
           <h4>An error occurred while fetching .well-known/smart-configuration</h4>

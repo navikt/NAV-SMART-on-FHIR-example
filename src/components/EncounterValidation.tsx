@@ -31,11 +31,10 @@ export default function EncounterValidation({ client }: EncounterValidationProps
       {isLoading && <p>Loading Encounter data...</p>}
       {error ? (
         <ValidationTable
-          validationTitle={'Encounter validation'}
           validations={[new Validation(handleError('Unable to fetch Encounter', error), Severity.ERROR)]}
         />
       ) : (
-        <ValidationTable validationTitle={'Encounter validation'} validations={validations} />
+        <ValidationTable validations={validations} />
       )}
     </div>
   )
