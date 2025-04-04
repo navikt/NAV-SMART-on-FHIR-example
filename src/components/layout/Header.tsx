@@ -1,5 +1,3 @@
-import React from 'react'
-
 const Header = () => {
   return (
     <div className="ml-8 mb-4 pb-5">

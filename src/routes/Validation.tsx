@@ -29,19 +29,19 @@ function Validation() {
             {smart.isLoading && <Spinner text="Initializing FHIR for resource validation" />}
             {smart.client && (
               <div className="flex flex-col gap-3">
-                <ValidationSection title="SMART configuration validation">
+                <ValidationSection index="1" title="SMART configuration validation">
                   <SmartConfigValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection title="ID token validation">
+                <ValidationSection index="2" title="ID token validation">
                   <IdTokenValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection title="Patient validation">
+                <ValidationSection index="3" title="Patient validation">
                   <PatientValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection title="Practitioner validation">
+                <ValidationSection index="4" title="Practitioner validation">
                   <PractitionerValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection title="Encounter validation">
+                <ValidationSection index="5" title="Encounter validation">
                   <EncounterValidation client={smart.client} />
                 </ValidationSection>
               </div>
@@ -52,19 +52,21 @@ function Validation() {
             {smart.isLoading && <Spinner text="Initializing FHIR for resource validation" />}
             {smart.client && (
               <div className="flex flex-col gap-3">
-                <ValidationSection title="Condition validation">
+                <ValidationSection index="6" title="Condition validation">
                   <ConditionValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection title="DocumentReference validation">
+                <ValidationSection index="7" title="DocumentReference validation">
                   <DocumentReferenceValidation client={smart.client} />
                 </ValidationSection>
                 <ValidationSection
+                  index="8"
                   title="Writable (binary) DocumentReference validation"
                   description="Uploads a Binary then creates a DocumentReference to said Binary, shows the result of the mutations"
                 >
                   <BinaryUploadWritableDocumentReference client={smart.client} />
                 </ValidationSection>
                 <ValidationSection
+                  index="9"
                   title="Writable (b64) DocumentReference validation"
                   description="Uploads a DocumentReference directly with a b64 encoded payload, then shows the result of the mutation."
                 >

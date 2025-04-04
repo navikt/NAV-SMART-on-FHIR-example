@@ -10,7 +10,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "format": "prettier -w eslint.config.js src .yarnrc.yml postcss.config.js"
   },
   "dependencies": {
     "@tanstack/react-query": "^5.71.5",
