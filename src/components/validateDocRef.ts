@@ -1,8 +1,13 @@
 import { DocumentReference } from 'fhir/r4'
 import { Severity, Validation } from '../utils/Validation.ts'
 
-export function validateDocumentReference(documentReference: DocumentReference): Validation[] {
+export function validateDocumentReference(documentReference: DocumentReference | null): Validation[] {
   const newValidations: Validation[] = []
+
+  if (documentReference == null) {
+    newValidations.push(new Validation('No document reference found', Severity.ERROR))
+    return newValidations
+  }
 
   if (documentReference.resourceType !== 'DocumentReference') {
     newValidations.push(new Validation('Resource is not of type DocumentReference', Severity.ERROR))

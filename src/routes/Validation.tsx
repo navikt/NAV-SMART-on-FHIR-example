@@ -55,7 +55,11 @@ function Validation() {
                 <ValidationSection index="6" title="Condition validation">
                   <ConditionValidation client={smart.client} />
                 </ValidationSection>
-                <ValidationSection index="7" title="DocumentReference validation">
+                <ValidationSection
+                  index="7"
+                  title="DocumentReference validation"
+                  description={`Tries to get a list of document references based on the token "urn:oid:2.16.578.1.12.4.1.1.9602|J01-2", then validates the first element in the list.`}
+                >
                   <DocumentReferenceValidation client={smart.client} />
                 </ValidationSection>
                 <ValidationSection

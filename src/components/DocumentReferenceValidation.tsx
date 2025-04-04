@@ -1,5 +1,5 @@
 import Client from 'fhirclient/lib/Client'
-import { DocumentReference } from 'fhir/r4'
+import { DocumentReference, Bundle } from 'fhir/r4'
 import { useQuery } from '@tanstack/react-query'
 import { Severity, Validation } from '../utils/Validation.ts'
 import { handleError } from '../utils/ErrorHandler.ts'
@@ -14,21 +14,44 @@ export interface DocumentReferenceValidationProps {
 export default function DocumentReferenceValidation({ client }: DocumentReferenceValidationProps) {
   const { error, data, isLoading } = useQuery({
     queryKey: ['documentReferenceValidation', client.encounter.id],
-    queryFn: async () => {
-      const documentReferences = await client.request<DocumentReference>(
+    queryFn: async (): Promise<DocumentReference | null> => {
+      const bundle = await client.request<Bundle<DocumentReference>>(
         `DocumentReference?patient=${client.patient.id}&type=urn:oid:2.16.578.1.12.4.1.1.9602|J01-2`,
       )
 
       console.debug('✅ DocumentReference data fetched')
-      Object.entries(documentReferences).forEach(([key, value]) => {
-        console.debug(`ℹ️ DocumentReference.${key}:`, value)
+
+      if (bundle == null || !('resourceType' in bundle) || bundle.resourceType !== 'Bundle') {
+        console.warn(`❌ Expected Bundle, got ${bundle.resourceType}`)
+        return null
+      }
+
+      if (bundle.entry == null || bundle.entry.length === 0) {
+        console.debug(`❌ No DocumentReferences with token "type=urn:oid:2.16.578.1.12.4.1.1.9602|J01-2" found`)
+        return null
+      }
+
+      const documentReferences = bundle.entry.map((it) => it.resource)
+      documentReferences.forEach((docRef, index) => {
+        if (docRef == null) {
+          console.warn(`❌ ℹ️ DocumentReference[${index}] was null for some reason`)
+          return
+        }
+
+        Object.entries(docRef).forEach(([key, value]) => {
+          console.debug(`ℹ️ DocumentReference[${index}].${key}:`, value)
+        })
       })
 
-      return documentReferences
+      const firstRelevantDocumentReference: DocumentReference | undefined = documentReferences.find(
+        (it) => it != null && it.resourceType === 'DocumentReference',
+      )
+
+      return firstRelevantDocumentReference ?? null
     },
   })
 
-  const validations: Validation[] = data ? validateDocumentReference(data) : []
+  const validations: Validation[] = validateDocumentReference(data ?? null)
 
   return (
     <div>

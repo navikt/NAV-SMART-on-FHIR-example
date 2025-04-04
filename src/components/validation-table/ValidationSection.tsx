@@ -12,7 +12,7 @@ const ValidationSection = ({ title, index, description, children }: PropsWithChi
       <h3 className="ml-4 mb-2 font-bold">
         {index}. {title}
       </h3>
-      {description && <p className="ml-4 text-sm -mt-2 mb-2">{description}</p>}
+      {description && <p className="ml-4 text-sm -mt-2 mb-2 italic">{description}</p>}
       {children}
     </div>
   )
