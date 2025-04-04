@@ -3,6 +3,7 @@ import { Severity, Validation } from '../utils/Validation.ts'
 import { SmartConfiguration } from '../smart/SmartConfiguration.ts'
 import ValidationTable from './validation-table/ValidationTable.tsx'
 import { useQuery } from '@tanstack/react-query'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface SmartConfigValidationProps {
   readonly client: Client
@@ -115,8 +116,8 @@ export default function SmartConfigValidation({ client }: SmartConfigValidationP
   })
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Validating well-known/smart-configuration</p>}
+    <div>
+      {isLoading && <Spinner text="Validating well-known/smart-configuration" />}
       {data && <ValidationTable validations={data} />}
       {error && (
         <div>

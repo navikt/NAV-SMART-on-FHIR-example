@@ -1,6 +1,10 @@
 import { oauth2 as SMART } from 'fhirclient'
 import { authOptions } from '../../fhir/FhirAuth.ts'
 import { useQuery } from '@tanstack/react-query'
+import Header from '../../components/layout/Header.tsx'
+import Page from '../../components/layout/Page.tsx'
+import ErrorPage from '../ErrorPage.tsx'
+import Spinner from '../../components/spinner/Spinner.tsx'
 
 export default function Launch() {
   /**
@@ -18,13 +22,25 @@ export default function Launch() {
     queryFn: async () => {
       // Ikke gjør noe med promise callback, denne siden skal bare omdirigere.
       await SMART.authorize(authOptions)
+
+      // React Query blir sur om man ikke returnerer noe fra en query-fn
+      return null
     },
   })
 
   return (
-    <div id="launch-container">
-      {error && <p>{error.message}</p>}
-      {isLoading ? <p>Loading...</p> : <p>Starter SMART launch sekvens, denne siden vil omdirigere automatisk.</p>}
-    </div>
+    <Page sidebar={null}>
+      <Header />
+      <div className="my-3">
+        <h2 className="ml-8 font-bold text-2xl">Smart on FHIR Launch!</h2>
+        {isLoading ? (
+          <Spinner text="Launching SMART application..." />
+        ) : !error ? (
+          <Spinner text="Launch complete! Redirecting..." />
+        ) : (
+          <ErrorPage error={error.message} />
+        )}
+      </div>
+    </Page>
   )
 }

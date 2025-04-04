@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query'
 import { Severity, Validation } from '../utils/Validation.ts'
 import { handleError } from '../utils/ErrorHandler.ts'
 import ValidationTable from './validation-table/ValidationTable.tsx'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface PractitionerValidationProps {
   readonly client: Client
@@ -31,8 +32,8 @@ export default function PractitionerValidation({ client }: PractitionerValidatio
   const validations: Validation[] = data ? validatePractitioner(data) : []
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Loading Practitioner data...</p>}
+    <div>
+      {isLoading && <Spinner text="Loading Practitioner data..." />}
       {error ? (
         <ValidationTable
           validations={[new Validation(handleError('Unable to fetch Practitioner', error), Severity.ERROR)]}

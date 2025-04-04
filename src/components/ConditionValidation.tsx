@@ -4,6 +4,7 @@ import { Condition } from 'fhir/r4'
 import { Severity, Validation } from '../utils/Validation.ts'
 import ValidationTable from './validation-table/ValidationTable.tsx'
 import { handleError } from '../utils/ErrorHandler.ts'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface ConditionValidationProps {
   readonly client: Client
@@ -31,8 +32,8 @@ export default function ConditionValidation({ client }: ConditionValidationProps
   const validations: Validation[] = data ? validateCondition(data) : []
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Loading Condition data...</p>}
+    <div>
+      {isLoading && <Spinner text="Loading Condition data..." />}
       {error ? (
         <ValidationTable
           validations={[new Validation(handleError('Unable to fetch Condition', error), Severity.ERROR)]}

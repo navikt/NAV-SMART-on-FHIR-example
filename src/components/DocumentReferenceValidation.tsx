@@ -5,6 +5,7 @@ import { Severity, Validation } from '../utils/Validation.ts'
 import { handleError } from '../utils/ErrorHandler.ts'
 import ValidationTable from './validation-table/ValidationTable.tsx'
 import { validateDocumentReference } from './validateDocRef.ts'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface DocumentReferenceValidationProps {
   readonly client: Client
@@ -30,8 +31,8 @@ export default function DocumentReferenceValidation({ client }: DocumentReferenc
   const validations: Validation[] = data ? validateDocumentReference(data) : []
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Loading DocumentReference data...</p>}
+    <div>
+      {isLoading && <Spinner text="Loading DocumentReference data..." />}
       {error ? (
         <ValidationTable
           validations={[new Validation(handleError('Unable to fetch DocumentReference', error), Severity.ERROR)]}

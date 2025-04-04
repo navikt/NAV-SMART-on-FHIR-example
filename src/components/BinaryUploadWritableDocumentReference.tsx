@@ -8,6 +8,7 @@ import { pdf } from '../mocks/base64pdf.ts'
 import { validateDocumentReference } from './validateDocRef.ts'
 import { useState } from 'react'
 import { useDocumentReferenceQuery } from './useDocumentReferenceQuery.ts'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface BinaryUploadWritableDocumentReferenceProps {
   readonly client: Client
@@ -55,7 +56,7 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
   } = useDocumentReferenceQuery(client, docRefId)
 
   if (isPending) {
-    return <p>Uploading binary file and creating DocumentReference...</p>
+    return <Spinner text="Uploading binary file and creating DocumentReference..." />
   }
 
   if (error) {
@@ -109,20 +110,20 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
 
   if (!fetchedDocRefData) {
     return (
-      <div className="basis-1/5">
+      <div>
         <p>Loading DocumentReference data...</p>
       </div>
     )
   }
   if (fetchedDocRefIsLoading) {
     return (
-      <div className="basis-1/5">
+      <div>
         <p>Loading DocumentReference data...</p>
       </div>
     )
   } else if (fetchedDocRefError) {
     return (
-      <div className="basis-1/5">
+      <div>
         <ValidationTable
           validations={[
             new Validation(handleError('Unable to fetch Writable DocumentReference', error), Severity.ERROR),
@@ -133,7 +134,7 @@ export default function BinaryUploadWritableDocumentReference({ client }: Binary
   } else {
     const validations: Validation[] = data ? validateDocumentReference(fetchedDocRefData) : []
     return (
-      <div className="basis-1/5">
+      <div>
         <div>
           <ValidationTable validations={validations} />
         </div>

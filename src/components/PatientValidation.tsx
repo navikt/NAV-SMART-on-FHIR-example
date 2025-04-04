@@ -4,6 +4,7 @@ import ValidationTable from './validation-table/ValidationTable.tsx'
 import { Patient } from 'fhir/r4'
 import { handleError } from '../utils/ErrorHandler.ts'
 import { useQuery } from '@tanstack/react-query'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface PatientValidationProps {
   readonly client: Client
@@ -27,8 +28,8 @@ export default function PatientValidation({ client }: PatientValidationProps) {
   const validations: Validation[] = data ? validatePatient(data) : []
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Loading Patient data...</p>}
+    <div>
+      {isLoading && <Spinner text="Loading Patient data..." />}
       {error ? (
         <ValidationTable
           validations={[new Validation(handleError('Unable to fetch Patient', error), Severity.ERROR)]}

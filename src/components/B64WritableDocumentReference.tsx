@@ -8,6 +8,7 @@ import { validateDocumentReference } from './validateDocRef.ts'
 import ValidationTable from './validation-table/ValidationTable.tsx'
 import { handleError } from '../utils/ErrorHandler.ts'
 import { useDocumentReferenceQuery } from './useDocumentReferenceQuery.ts'
+import Spinner from './spinner/Spinner.tsx'
 
 export interface B64WritableDocumentReferenceProps {
   readonly client: Client
@@ -67,7 +68,7 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
 
   if (createdDocumentReferenceUploadError) {
     return (
-      <div className="basis-1/5">
+      <div>
         <ValidationTable
           validations={[
             new Validation(
@@ -81,14 +82,12 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
   }
 
   if (isLoading) {
+    return <Spinner text="Loading DocumentReference data..." />
+  }
+
+  if (error) {
     return (
-      <div className="basis-1/5">
-        <p>Loading DocumentReference data...</p>
-      </div>
-    )
-  } else if (error) {
-    return (
-      <div className="basis-1/5">
+      <div>
         <ValidationTable
           validations={[
             new Validation(handleError('Unable to fetch Writable DocumentReference', error), Severity.ERROR),
@@ -98,7 +97,7 @@ export default function B64WritableDocumentReference({ client }: B64WritableDocu
     )
   } else {
     return (
-      <div className="basis-1/5">
+      <div>
         <div>
           <ValidationTable validations={validations} />
         </div>

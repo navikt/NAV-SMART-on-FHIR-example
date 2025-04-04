@@ -4,6 +4,7 @@ import ValidationTable from './validation-table/ValidationTable.tsx'
 import { Encounter } from 'fhir/r4'
 import { handleError } from '../utils/ErrorHandler.ts'
 import { useQuery } from '@tanstack/react-query'
+import Spinner from './spinner/Spinner'
 
 export interface EncounterValidationProps {
   readonly client: Client
@@ -27,8 +28,8 @@ export default function EncounterValidation({ client }: EncounterValidationProps
   const validations: Validation[] = data ? validateEncounter(data) : []
 
   return (
-    <div className="basis-1/5">
-      {isLoading && <p>Loading Encounter data...</p>}
+    <div>
+      {isLoading && <Spinner text="Loading Encounter data..." />}
       {error ? (
         <ValidationTable
           validations={[new Validation(handleError('Unable to fetch Encounter', error), Severity.ERROR)]}

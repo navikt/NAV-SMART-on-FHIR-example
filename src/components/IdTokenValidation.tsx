@@ -110,7 +110,7 @@ export default function IdTokenValidation({ client }: IdTokenValidationProps) {
   const validations = validateIdToken(client)
 
   return (
-    <div className="basis-1/5">
+    <div>
       <ValidationTable validations={validations} />
     </div>
   )
